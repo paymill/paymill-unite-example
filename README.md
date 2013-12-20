@@ -56,7 +56,7 @@ chmod 777 paymill-unite-example/system/merchant.csv
 
 Open the first example which representates your initial connect page with the PAYMILL Connect button:
 
-_http://test.local/paymill-unite-example/merchant_
+_http://test.local/paymill-unite-example/connect.php_
 
 As you can see in the short description below, the button will direct your merchant to our connect page.
 The URL contains some important parameters:
@@ -73,7 +73,7 @@ If your merchant already has a PAYMILL account he can login, if not he can regis
 After he authorized your request by clicking the "Authorize" button he will be redirect to your specified redirect URI. In our example we defined _http://test.local/paymill-unite-example/system/authMerchant.php_.
 The PHP script _authMerchant.php_ stores the received connection data into the CSV file (paymill-unite-example/system/merchant.csv), for the later use for doing transactions.
 
-After storing the data, the script redirects the merchant to a success page _http://test.local/paymill-unite-example/merchant/final.php_:
+After storing the data, the script redirects the merchant to a success page _http://test.local/paymill-unite-example/system/authMerchant.php_:
 
 **Authorization was successful!**
 
@@ -83,7 +83,7 @@ Since the authorization was done, you have your access key for the connected mer
 Feel free to store your access key for your usage in a database or where ever you want as long it is save.
 
 To test the transaction example go to:
-_http://test.local/paymill-unite-example_
+_http://test.local/paymill-unite-example/shopping-cart.php_
 
 Here you see an example marketplace shopping cart with a total amount which must be paid.
 The shopping cart contains the product of your merchant.
@@ -92,11 +92,11 @@ The fields which are deactived should be hidden, they are visible to make it bet
 As you can see there is also a "fee" field. This field allows you to send an (included) fee for this transaction.
 This fee will be collected for each transaction and transferred to your account by us (on a weekly basis).
 
-When you look at the source code of this file (paymill-unite-example/index.php) you find the JavaScrip variable **PAYMILL_PUBLIC_KEY**, which contains the public key of your merchant (you received it with PAYMILL Connect).
-But to do the transaction itself, which is done in _paymill-unite-example/paymill_test.php_ you need your personal access key **$access_token**, which you also received with PAYMILL Connect.
+When you look at the source code of this file (paymill-unite-example/shopping-cart.php) you find the JavaScrip variable **PAYMILL_PUBLIC_KEY**, which contains the public key of your merchant (you received it with PAYMILL Connect).
+But to do the transaction itself, which is done in _paymill-unite-example/api-trx-request.php_ you need your personal access key **$access_token**, which you also received with PAYMILL Connect.
 
 For the fee transfer your connected merchant need to be a client of your app with a valid payment object.
-this payment object must also be past to the transaction create function (as you can see in paymill-unite-example/paymill_test.php).
+this payment object must also be past to the transaction create function (as you can see in paymill-unite-example/api-trx-request.php).
 
 The rest is the same procedure as explained in our [brief instructions](https://www.paymill.com/en-gb/documentation-3/introduction/brief-instructions/).
 
@@ -192,25 +192,56 @@ A successful response contains a private api key to the merchants account plus h
 
 ```json
 {
-    "access_token": "bfa0e34a3073dc7f06e26bffe74077a3",
-    "token_type": "basic",
+    "access_token": "55727e05094c17ef44649a1710b00d57",
+    "expires_in": null,
+    "token_type": "bearer",
+    "scope": "transactions_rw refunds_rw",
     "refresh_token": "07fda540e5283039683f6400651b5eaf",
-    "public_key": "054222812442d41085001d40fbb31d0b",
     "merchant_id": "mer_1d70acbf80c8c35ce83680715c06be0d15c06be0d",
-    "currencies": ["EUR", "GBP"],
-    "methods": ["visa", "mastercard", "amex"]
+    "is_active": true,
+    "payment_methods": [
+        {
+            "type": "visa",
+            "currency": "EUR",
+            "acquirer": "wirecard"
+        },
+        {
+            "type": "visa",
+            "currency": "GBP",
+            "acquirer": "wirecard"
+        },
+        {
+            "type": "mastercard",
+            "currency": "EUR",
+            "acquirer": "wirecard"
+        }
+    ],
+    "access_keys": {
+        "test": {
+            "public_key": "342070708285cd3d98606d2986cb470f",
+            "private_key": "4fe2b5ba56ff916eb4e644bad381e62e"
+        },
+        "live": {
+            "public_key": "8175823c16dd0c7b222e9ea0e7352e51",
+            "private_key": "55727e05094c17ef44649a1710b00d57"
+        }
+    },
+    "livemode": true,
+    "public_key": "8175823c16dd0c7b222e9ea0e7352e51",
 }
 ```
 
-* currencies may contain every 3-letter currency code supported by PAYMILL and specified by _ISO 4217_.
-* methods may contain a combination of the following:
-  * _visa_: Visa cards
-  * _mastercard_: MasterCard cards
-  * _amex_: American Express cards
-  * _jcb_: JCB cards
-  * _dinersclub_: DinersClub cards
-  * _cup_: China UnionPay cards
-  * _elv_: Direct debit (ELV, Germany only).
+* payment_methods may contain a list of active payment methods which are combinations of card type, currency and acquirer:
+** type may contain one of the following values:
+*** visa: Visa cards
+*** mastercard: MasterCard cards
+*** amex: American Express cards
+*** jcb: JCB cards
+*** dinersclub: DinersClub cards
+*** cup: China UnionPay cards
+*** elv: Direct debit (ELV, Germany only).
+** currency may contain every 3-letter currency code supported by PAYMILL and specified by ISO 4217
+** acquirer may contain one of our recent acquirer ("acceptance", "wirecard") for your payment method configuration.
 
 **Note:** If you request a live api key for a merchant account which can't process live transactions yet then the access token response won't contain a public key and the private key can't be used until the merchant completed the activation process. You can always request a new api key by using the refresh token. See Refreshing an access token for details. See Webhooks for applications for details on activation notifications.
 

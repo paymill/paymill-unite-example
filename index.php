@@ -1,178 +1,135 @@
 <?php
     include 'library/unite.php';
-
-    $row = 1;
-    if (($handle = @fopen("system/merchant.csv", "r")) !== FALSE) {
-        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-            $num = count($data);
-
-            for ($c=0; $c < $num; $c++) {
-                //$merchant_id = $data[$merchant_id];
-                $public_key = $data[2];
-                $access_token = $data[0];
-            }
-        }
-        fclose($handle);
-    }
 ?>
 <!DOCTYPE html>
-
 <html lang="en-gb">
-
     <head>
-        <script type="text/javascript" src="js/jquery-ui/js/jquery-1.9.1.min.js"></script>
-        <script type="text/javascript" src="js/jquery-ui/js/jquery-ui-1.10.1.custom.min.js"></script>
-
-        <script type="text/javascript" src="https://bridge.paymill.com"></script>
-
-        <script type="text/javascript">
-            var PAYMILL_PUBLIC_KEY = '<?php echo $public_key ?>';
-
-            $(document).ready(function() {
-                $("#payment-form").submit(function(event) {
-                    // Deactivate submit button to avoid further clicks
-                    $('.submit-button').attr("disabled", "disabled");
-
-                    if (false == paymill.validateCardNumber($(".card-number").val())) {
-                        $(".payment-errors").html("<span style='color: #ff0000'>Invalid Card Number</span>");
-                        return false;
-                    }
-                    if (false == paymill.validateExpiry($(".card-expiry-month").val(), $(".card-expiry-year").val())) {
-                        $(".payment-errors").html("<span style='color: #ff0000'>Invalid Valid To Date</span>");
-                        return false;
-                    }
-                    if (false == paymill.validateCvc($(".card-cvc").val())) {
-                        $(".payment-errors").html("<span style='color: #ff0000'>Invalid CVC</span>");
-                        return false;
-                    }
-
-                    paymill.createToken({
-                        number: $('.card-number').val(),  // required, ohne Leerzeichen und Bindestriche
-                        exp_month: $('.card-expiry-month').val(),   // required
-                        exp_year: $('.card-expiry-year').val(),     // required, vierstellig z.B. "2016"
-                        cvc: $('.card-cvc').val(),                  // required
-                        amount_int: $('.card-amount').val(),      // required, integer, z.B. "15" für 0.15 Euro
-                        currency: $('.card-currency').val(),  // required, ISO 4217 z.B. "EUR" od. "GBP"
-                        cardholdername: $('.card-holdername').val() // optional
-                    }, PaymillResponseHandler);                   // Info dazu weiter unten
-
-                    return false;
-                });
-            });
-
-            function PaymillResponseHandler(error, result) {
-                if (error) {
-                    // Shows the error above the form
-                    $(".payment-errors").text(error.apierror);
-                    $(".submit-button").removeAttr("disabled");
-                } else {
-                    var form = $("#payment-form");
-                    // Output token
-                    var token = result.token;
-                    // Insert token into form in order to submit to server
-                    form.append("<input type='hidden' name='paymillToken' value='" + token + "'/>");
-
-                    $.post(
-                        "paymill_test.php",
-                        $("#payment-form").serialize(),
-                        function(result) {
-                            //very simple frontend test if API response sets transaction to closed
-                            if(result.indexOf('closed') != -1) {
-                                $('.payment-errors').html('<span style="color: #009900">Payment successfully done!</span>');
-                            }
-                            else {
-                                $('.payment-errors').html('<span style="color: #ff0000;font-weight: normal">There was an error.</span>');
-                            }
-                        },
-                        'text'
-                    );
-                }
-            }
-        </script>
-
-        <link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css" type="text/css" />
-        <link rel="stylesheet" href="css/screen.css" type="text/css" />
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     </head>
 
     <body>
+        <div class="container">
         <div class="header">
-            <h1>Paymill Unite Demo-Shop</h1>
+            <h1><img src="img/icon.png" style="height: 27px; margin-bottom: 6px;" /> PAYMILL Unite Demo</h1>
         </div>
-        <div class="main">
-            <h4>basket</h4>
-            <table width="100%">
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Welcome to the PAYMILL Unite demo</h3>
+          </div>
+          <div class="panel-body">
+            <p>This is a very minimalistic PAYMILL Unite demo written in PHP.<br>
+            With this demo we want to show you how to use PAYMILL Unite to connect your app with a merchant.</p>
+
+            <p><a href="https://paymill.com/en-gb/unite-documentation/">Please read the PAYMILL Unite documentation</a> before you start.</p>
+          </div>
+        </div>
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Current configuration</h3>
+          </div>
+          <div class="panel-body">
+            <p>There's a basic configuration file where you can set up your
+                connection data for the OAuth <a href="connect.php">connect</a>:</p>
+            <table class="table table-striped table-bordered">
                 <thead>
-                    <tr bgcolor="#d3d3d3">
-                        <th align="left">Description</th>
-                        <th>Amount</th>
-                        <th align="right">Price (netto)</th>
-                        <th align="right">Price (brutto)</th>
+                    <tr>
+                        <th>Setting</th>
+                        <th>Value</th>
+                        <th>Description</th>
                     </tr>
                 </thead>
-                <tr bgcolor="#ffffff">
-                    <td>AC Cobra</td>
-                    <td align="center">1</td>
-                    <td align="right">16,72 &euro;</td>
-                    <td align="right">19,90 &euro;</td>
-                </tr>
-                <tr bgcolor="#eeeeee">
-                    <td>Porsche 911 993 Carrera 4S</td>
-                    <td align="center">1</td>
-                    <td align="right">16,72 &euro;</td>
-                    <td align="right">19,90 &euro;</td>
-                </tr>
-                <tr bgcolor="#ffffff">
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td align="right" style="border-top: 4px double #d3d3d3"><b>39,80 &euro;</b></td>
-                </tr>
+                <tbody>
+                    <tr>
+                        <td><a href="https://paymill.com/en-gb/documentation-3/reference/paymill-bridge">Bridge</a></td>
+                        <td><code><?php echo $bridge_url; ?></code></td>
+                        <td>JavaScript which handles the payment form validation and payment token generation. (Don't modify!)</td>
+                    </tr>
+                    <tr>
+                        <td><a href="https://paymill.com/en-gb/documentation-3/reference/api-reference">API</a> root</td>
+                        <td><code><?php echo $paymill_api_root; ?></code></td>
+                        <td>API root URL (Don't modify!)</td>
+                    </tr>
+                    <tr>
+                        <td>PAYMILL Connect URL</td>
+                        <td><code><?php echo $paymill_root; ?></code></td>
+                        <td>PAYMILL Connect form where the merchant authorizes your connect request. (Don't modify!)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client ID</strong></td>
+                        <td><code><?php echo $client_id; ?></code></td>
+                        <td>Equivalent to your App ID. Can be found in <br><em><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> App -> App details</em></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Secret</strong></td>
+                        <td><code><?php echo $client_secret; ?></code></td>
+                        <td>Needed for authentication. Can be found in <br><em><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> App -> App details</em></td>
+                    </tr>
+                    <tr>
+                        <td>Grant type</td>
+                        <td><code><?php echo $grant_type; ?></code></td>
+                        <td>OAuth grant type to request the authorization data (Don't modify!)</td>
+                    </tr>
+                    <tr>
+                        <td>Scope</td>
+                        <td><code><?php echo $scope; ?></code></td>
+                        <td>Permissions you are asking for.</td>
+                    </tr>
+                    <tr>
+                        <td>Redirect URI</td>
+                        <td><code><?php echo $redirect_uri; ?></code></td>
+                        <td>Your script which handles the returning authorization data (e.g. access keys etc.).</td>
+                    </tr>
+                </tbody>
             </table>
 
-            <div class="payment-form">
-                <form id="payment-form">
-                    <div class="payment-errors"> </div>
-                    <div class="form-row">
-                        <div class="labeldiv"><label>card number</label></div>
-                        <input class="card-number" type="text" size="20" value="4111111111111111" />
-                    </div>
-                    <div class="form-row">
-                        <div class="labeldiv"><label>CVC</label></div>
-                        <input class="card-cvc" type="text" size="4" value="111" />
-                    </div>
-                    <div class="form-row">
-                        <div class="labeldiv"><label>Name</label></div>
-                        <input class="card-holdername" type="text" size="20" value="lala" />
-                    </div>
+            <p>
+                <strong>Note:</strong> Please configure theses settings before you go on. You need at least one merchant account which acts as app.
+                If you don't have one yet just sign up for a free test account at PAYMILL (It takes just 2 minutes).
+                <a class="btn btn-xs btn-primary" href="https://app.paymill.com/en-gb/auth/register">Sign up.</a>
+            </p>
 
-                    <div class="form-row">
-                        <div class="labeldiv"><label>end date (MM/YYYY)</label></div>
-                        <input class="card-expiry-month input-small" type="text" size="2" value="12" />
-                        <span> </span>
-                        <input class="card-expiry-year input-small" type="text" size="4" value="2013" />
-                    </div>
-                    <div class="form-row">
-                        <div class="labeldiv"><label>Price</label></div>
-                        <input readonly class="card-amount" name="card-amount" type="text" value="3980" size="20" />
-                    </div>
-                    <div class="form-row">
-                        <div class="labeldiv"><label>Fee</label></div>
-                        <input readonly class="card-amount" name="card-fee" type="text" value="398" size="20" />
-                    </div>
-                    <div class="form-row">
-                        <div class="labeldiv"><label>Currency</label></div>
-                        <input readonly class="card-currency" name="card-currency" type="text" value="EUR" size="20" />
-                    </div>
-                    <button class="btn btn-large" type="submit">Buy now</button>
-                </form>
-            </div>
-
+          </div>
+          <div class="panel-footer">File: <code>library/unite.php</code></div>
         </div>
 
-        <div class="footer">
-            <div class="footerContent">
-                &copy; PAYMILL GmbH
-            </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title">Next steps</h3>
+          </div>
+          <div class="panel-body">
+            <p>The normal PAYMILL Unite workflow would be as follwed:</p>
+            <ol>
+                <li>
+                    Direct your merchant to a page were you implemented your individual PAYMILL Connect link/button.
+                    The button could look like our <a href="connect.php">example</a>.
+                </li>
+                <li>
+                    The button will send your merchant to the <a href="https://connect.paymill.com">PAYMILL Connect</a> page, were he can authorize your request.
+                </li>
+                <li>
+                    After the authorization the merchant will be redirected to your above defined redirect URI, were the received access keys are stored.
+                </li>
+                <li>
+                    Now if everything worked well, you can do a test transaction with our shopping cart <a href="shopping-cart.php">example</a>.
+                </li>
+            </ol>
+          </div>
+        </div>
+
+
+        <p>
+           <a href="connect.php" class="btn btn-primary btn-sm">
+            Go on with the connect button example
+            <span class="glyphicon glyphicon-chevron-right"></span>
+          </a>
+        </p>
+
+        <p>&copy; PAYMILL GmbH</p>
+
         </div>
     </body>
 

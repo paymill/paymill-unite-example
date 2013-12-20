@@ -18,14 +18,14 @@ class Services_Paymill_Apiclient_Curl implements Services_Paymill_Apiclient_Inte
 {
     /**
      * Paymill API merchant key
-     * 
+     *
      * @var string
      */
     private $_apiKey = null;
 
     /**
      *  Paymill API base url
-     * 
+     *
      *  @var string
      */
     private $_apiUrl = '/' ;
