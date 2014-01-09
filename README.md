@@ -61,9 +61,9 @@ _http://test.local/paymill-unite-example/connect.php_
 As you can see in the short description below, the button will direct your merchant to our connect page.
 The URL contains some important parameters:
 
-* _client_id_: Your app id
-* _scope_: Your requested permissions
-* _redirect_uri_ (optional): Your redirect URI to receive your access key after the authorization.
+* *client_id*: Your app id
+* *scope*: Your requested permissions
+* *redirect_uri* (optional): Your redirect URI to receive your access key after the authorization.
 
 See [Requesting an authorization code via OAuth2](https://github.com/paymill/paymill-unite-example#requesting-an-authorization-code) for more information.
 
@@ -108,13 +108,20 @@ For more detailed information please study the following paragraphs.
 
 First thing you have to do is to register a free PAYMILL account at https://www.paymill.com.
 
-### Registering an application
+### Activate apps
 
-Navigate to our Cockpit and open the account preferences page. In the “Application” tab you can register a new application. You can register two applications: one for live mode and one for test mode. The difference between live and test applications are:
+Navigate to our PAYMILL Cockpit and open the account preferences page. Under the "App" tab you can activate up to 10 apps.
+Each app can request live and test keys via the connect process (see OAuth2 Workflow). An app needs the following parameters:
 
-* For test applications you will only receive test api keys for connected merchants
-* For live applications you will only receive live api keys for connected merchants
-* Live api keys for connected merchants are not functional as long as the merchant hasn't completed the activation (see Creating the access token and Webhooks for applications).
+* Name: Name of the app.
+* Redirect URI: URI of your script which handles the connect responses.
+* App logo: An optional app logo.
+
+After activating an app you'll get the following app parameters which you need for the connect process:
+
+* App ID: The unique identifier of the app (equals OAuths client_id)
+* Client Secret: Secret app access token
+* Hash Token: Secret hash token you can use to create a redirect URI checksum.
 
 ### OAuth2 Workflow
 
@@ -123,11 +130,11 @@ Navigate to our Cockpit and open the account preferences page. In the “Applica
 To request an authorization code for another merchants account, you’ll have to redirect that merchant to the authorization page on our servers.
 The target url for this redirect https://connect.paymill.com/authorize and you need to append a few query parameters to the request:
 
-* _client_id_ (required): The application id given to you upon application registration.
-* _response_type_ (required): Fixed string set to "code".
-* _scope_ (required): A space-separated list of permissions you want to request.
-* _redirect_uri_ (optional): If you need a different redirect URI (to that from the app settings).
-* _custom_param_ (optional): If you want to pass additional values.
+* *client_id* (required): The application id given to you upon application registration.
+* *response_type* (required): Fixed string set to "code".
+* *scope* (required): A space-separated list of permissions you want to request.
+* *redirect_uri* (optional): If you need a different redirect URI (to that from the app settings).
+* *custom_param* (optional): If you want to pass additional values.
 
 **Example:**
 
@@ -153,10 +160,10 @@ Error response:
 
     https://example.com/?error=access_denied&error_description=The+user+denied+access+to+your+application
 
-* _access_denied_: The user denied access to your application
-* _invalid_request_: Invalid or missing response type
-* _unsupported_response_type_: authorization code grant type not supported
-* _invalid_scope_: An unsupported scope was requested
+* *access_denied*: The user denied access to your application
+* *invalid_request*: Invalid or missing response type
+* *unsupported_response_type*: authorization code grant type not supported
+* *invalid_scope*: An unsupported scope was requested
 
 #### Privileges
 
@@ -181,10 +188,10 @@ If a merchant authorized your request you are handed an authorization code you c
 
 In order to create the access token, you have to call the access token endpoint at https://connect.paymill.com/token with a POST request. The request body must contain the request parameters using application/x-www-form-urlencoded format.
 
-* _grant_type_ (required): string set to the fixed value "authorization_code"
-* _code_ (required): the authorization code retrieved earlier
-* _client_id_ (required): the application id you created when registering an application.
-* _client_secret_ (required): the access key as show in your app settings. This is automatically the same value as your private api key / private test api key).
+* *grant_type* (required): string set to the fixed value "authorization_code"
+* *code* (required): the authorization code retrieved earlier
+* *client_id* (required): the application id you created when registering an application.
+* *client_secret* (required): the access key as show in your app settings. This is automatically the same value as your private api key / private test api key).
 
 **Note:** An authorization code expires within 30 seconds. If you don't request an access token within the time span, the code is invalidated and you'll get an error response when requesting the access token.
 
@@ -257,10 +264,10 @@ If something went wrong, an error response is returned as follows:
 
 **Possible errors are ...**
 
-* _invalid_request_: Request is invalid (no POST request).
-* _unsupported_grant_type_: grant_type parameter not set to authorization_code.
-* _invalid_grant_: Authorization code is invalid or expired.
-* _invalid_scope_: The requested privileges are not a subset of the originally requested privileges.
+* *invalid_request*: Request is invalid (no POST request).
+* *unsupported_grant_type*: grant_type parameter not set to authorization_code.
+* *invalid_grant*: Authorization code is invalid or expired.
+* *invalid_scope*: The requested privileges are not a subset of the originally requested privileges.
 
 #### Refreshing an access token
 
@@ -272,9 +279,9 @@ Trading a refresh token for an access token works similarly as creating an acces
 
 **Possible parameters contain ...**
 
-* _grant_type_ (required): fixed string set to refresh_token.
-* _refresh_token_ (required): the refresh token as given when the last access token was created.
-* _scope_ (optional): optional set of privileges for the new access token. Must be a subset of the originally requested privileges. Set to the originally requested privileges if omitted.
+* *grant_type* (required): fixed string set to refresh_token.
+* *refresh_token* (required): the refresh token as given when the last access token was created.
+* *scope* (optional): optional set of privileges for the new access token. Must be a subset of the originally requested privileges. Set to the originally requested privileges if omitted.
 
 The response is identical to the one described in Creating the access token.
 
@@ -284,7 +291,7 @@ When redirecting a merchant to our authorization page he may not have a PAYMILL 
 
 **Note:** The authorization request requires parameters to be passed within the query string. URL however are limited to around 2000 characters in some web browsers. In order to send in extensive activation data, we also allow the authorization request to be made as a POST request. You can then send in the activation data as application/x-www-form-urlencoded request body. Note however that all OAuth2 related parameters as described in Requesting an authorization code have to be put into the query string, no matter what request method you choose.
 
-List of possible activation data (work in progress): [See PDF documentation](https://static.paymill.com/r/126f1f21ef19d23021f3a04c1e4ab73fccc7b82d/downloads/20130619-documentation_unite.pdf).
+List of possible activation data (work in progress): [See documentation](https://paymill.com/en-gb/unite-documentation/).
 
 ### API extensions for applications
 
@@ -355,12 +362,14 @@ There are three new webhook events available:
 * _app.merchant.activated_: triggered as soon as a connected merchant completed the activation process. Live keys only become valid after this event.
 * _app.merchant.deactivated_: triggered if a merchant, which has been activated previously gets deactivated again. This might be triggered together with _app.merchant.rejected_.
 * _app.merchant.rejected_: triggered if a newly connected merchant is rejected during his activation process. Live keys will never become valid if this event occurs.
+* _app.merchant.pm.update_: triggered if a merchant payment method has become active or inactive. The message will contain all recently active payment methods and an information which one has changed.
+* _app.merchant.app.disabled_: triggered, when a merchant disables an application he previously granted access to his account
 
 These webhooks can be registered to the application's account and are triggered for every merchant who connects to this application.
 
 **Note:** app.merchant.activated and app.merchant.rejected are only triggered for merchant's which hadn't completed their activation when connecting to your application.
 
-The webhook data contains the user_id which was already given to you upon the access token request. This id can be used to match a webhook call to an authorization / connect attempt.
+The webhook data contains the *user_id* which was already given to you upon the access token request. This id can be used to match a webhook call to an authorization / connect attempt.
 
 **Example:**
 

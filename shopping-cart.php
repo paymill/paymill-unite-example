@@ -16,6 +16,7 @@
 
             $(document).ready(function() {
                 $("#payment-form").submit(function(event) {
+                    $(".payment-errors").text('');
                     $('.api-response').addClass('hidden');
 
                     // Deactivate submit button to avoid further clicks
@@ -164,7 +165,7 @@
                         <label>Expire date (MM/YYYY)</label>
                         <div class="row">
                             <div class="col-md-3"><input class="card-expiry-month form-control" type="text" size="2" value="12" /></div>
-                            <div class="col-md-4"><input class="card-expiry-year form-control" type="text" size="4" value="2013" /></div>
+                            <div class="col-md-4"><input class="card-expiry-year form-control" type="text" size="4" value="2016" /></div>
                         </div>
                     </div>
 
