@@ -1,0 +1,68 @@
+.modal-header {
+  padding: 60px 60px 40px 60px;
+  .close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: block;
+    width: 60px;
+    height: 60px;
+    text-align: center;
+    line-height: 60px;
+  }
+  .page-header,
+  h1 {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.modal-body {
+  padding: 0 60px;
+  .slider-toggle {
+    .make-xs-column(12);
+    margin: 30px 0 @lineHeight/2+30px;
+    border-bottom: 1px solid @borderColor;
+    text-align: center;
+    a {
+      position: relative;
+      top: @lineHeight/2;
+      display: inline-block;
+      padding:0 @lineHeight;
+      background: @white;
+      color: @ci-grey4;
+      font-weight: 700;
+      &:hover {
+        color:@text-color;
+        text-decoration: none;
+      }
+      i {
+        margin-right: 8px;
+      }
+    }
+  }
+}
+
+.modal-footer {
+  margin-top: 60px;
+  padding: 20px 60px;
+  border-top: 1px solid @borderColor;
+  border-radius: 0  0 @radius @radius;
+  background: @ci-grey7;
+  text-align: left;
+  .additional-info {
+    display: inline-block;
+    color: @ci-grey4;
+    font-size: @fontSize-small;
+    line-height: 40px;
+    cursor: pointer;
+    &:hover {
+      color: @textColor;
+      text-decoration: none;
+    }
+  }
+  .form-group {
+    margin: 0;
+    .pull-right();
+  }
+}

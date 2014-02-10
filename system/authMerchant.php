@@ -95,9 +95,9 @@
 <html lang="en-gb">
 
 <head>
-    <script type="text/javascript" src="../js/jquery-ui/js/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="../js/jquery-ui/js/jquery-ui-1.10.1.custom.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../assets/js/jquery-ui/assets/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="../assets/js/jquery-ui/assets/js/jquery-ui-1.10.1.custom.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/assets/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
     <!-- link rel="stylesheet" href="../css/screen.css" type="text/css" / -->
@@ -107,7 +107,7 @@
 
     <div class="container">
     <div class="header">
-        <h1><img src="../img/icon.png" style="height: 27px; margin-bottom: 6px;" /> PAYMILL Unite Demo</h1>
+        <h1><img src="../assets/img/icon.png" style="height: 27px; margin-bottom: 6px;" /> PAYMILL Unite Demo</h1>
     </div>
 
         <?php if($success): ?>

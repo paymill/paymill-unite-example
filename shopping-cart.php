@@ -1,13 +1,14 @@
 <?php
+
     include 'library/unite.php';
 ?>
 <!DOCTYPE html>
 <html lang="en-gb">
     <head>
-        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/screen.css">
 
-        <script type="text/javascript" src="js/jquery-ui/js/jquery-1.9.1.min.js"></script>
-        <script type="text/javascript" src="js/jquery-ui/js/jquery-ui-1.10.1.custom.min.js"></script>
+        <script type="text/javascript" src="assets/js/jquery-ui/js/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="assets/js/jquery-ui/js/jquery-ui-1.10.1.custom.min.js"></script>
 
         <script type="text/javascript" src="<?php echo $bridge_url; ?>"></script>
 
@@ -85,8 +86,20 @@
 
     <body>
         <div class="container">
-        <div class="header">
-            <h1><img src="img/icon.png" style="height: 27px; margin-bottom: 6px;" /> PAYMILL Unite Demo</h1>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="header">
+                    <h1><img src="assets/img/icon.png" style="height: 27px; margin-bottom: 6px;" /> PAYMILL Unite Demo</h1>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <ol class="breadcrumb">
+                  <li ><a href="index.php">1. Config</a></li>
+                  <li><a href="connect.php">2. Connect</a></li>
+                  <li class="active">3. Shopping Cart</li>
+                  <li><a href="refresh-token.php">4. Refresh Token</a></li>
+                </ol>
+            </div>
         </div>
 
 
@@ -182,7 +195,7 @@
                         <input readonly class="card-currency form-control" name="card-currency" type="text" value="EUR" size="20" />
                     </div>
                     <?php if($public_key): ?>
-                    <button class="btn btn-sm btn-primary" type="submit">Buy now</button>
+                    <button class="btn btn-sm btn-success" type="submit">Buy now</button>
                     <?php endif; ?>
                 </form>
            </div>
@@ -199,21 +212,17 @@
            </div>
         </div>
 
-
-
-
-
         <p>
-          <a href="." class="btn btn-primary btn-sm">
+          <a href="." class="btn btn-success btn-sm pull-left">
             <span class="glyphicon glyphicon-chevron-left"></span>
             Back to intro
           </a>
-          <a href="connect.php" class="btn btn-primary btn-sm">
+<!--           <a href="connect.php" class="btn btn-primary btn-sm">
              Connect page
-          </a>
-          <a href="https://app.paymill.com" class="btn btn-primary btn-sm">
+          </a> -->
+          <a href="https://app.paymill.com" class="btn btn-success btn-sm pull-right">
             PAYMILL Cockpit
-            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="glyphicon glyphicon-chevron-right "></span>
           </a>
         </p>
 

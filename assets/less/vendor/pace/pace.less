@@ -1,0 +1,38 @@
+// Custom LESS for PACE http://github.hubspot.com/pace/docs/welcome/
+.pace {
+  pointer-events: none;
+  -webkit-pointer-events: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.pace .pace-progress {
+  position: fixed;
+  top: 59px;
+  left: 0;
+  z-index: 1000;
+  height: 5px;
+  background: @ci-orange;
+  .transition(left .3s ease);
+  .transition(width .5s ease);
+  @media(min-width:@screen-md-min){
+    left:@sidebarWidth;
+  }
+}
+
+.pace-activity{
+  display: none;
+}
+
+.pace-done .pace {
+  display: none;
+}
+
+.pushed-body .pace .pace-progress {
+  left:@sidebarWidth;
+  .transition(left .3s ease);
+}
+
+
+

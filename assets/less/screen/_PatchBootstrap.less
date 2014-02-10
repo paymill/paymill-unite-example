@@ -1,0 +1,622 @@
+// Patch Font-Family
+@font-family-sans-serif : "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-monospace  : "Source Code Pro", Monaco, Menlo, Consolas, "Courier New", monospace;
+
+// Patch Grays using our Greys
+@gray-darker      : @ci-grey2;
+@gray-dark        : @ci-grey3;
+@gray             : @ci-grey4;
+@gray-light       : @ci-grey5;
+@gray-lighter     : @ci-grey6;
+
+// Patch Link Colors
+@link-color       : @ci-orange-link;
+@link-hover-color : @ci-orange-light;
+
+// Patch Text-Color
+@text-color       : @textColor;
+
+// Patch Font-Size
+@font-size-base   : @fontSize; //14px
+@font-size-large  : @fontSize-large; // ~18px
+@font-size-small  : @fontSize-small; // ~12px
+
+@font-size-h1     : ceil(@font-size-base * 2.57); // ~36px
+@font-size-h2     : ceil(@font-size-base * 2.00); // ~28px
+@font-size-h3     : ceil(@font-size-base * 1.57); // ~22px
+@font-size-h4     : ceil(@font-size-base * 1.14); // ~18px
+@font-size-h5     : @font-size-base;
+@font-size-h6     : ceil(@font-size-base * 0.85); // ~12px
+
+// Patch page-header small color
+@headings-small-color : @ci-grey4;
+
+// Patch Buttons
+
+// - Default Button Variables
+@btn-default-color  : @textColor;
+@btn-default-bg     : rgba(255,255,255,0);// rgba needed because you cannot darken "transparent"
+@btn-default-border : @borderColor;
+
+// - Primary Button Variables
+@btn-primary-color  : @white;
+@btn-primary-bg     : @ci-orange;
+@btn-primary-border : @ci-orange;
+
+// - Danger Button Variables
+@btn-danger-color  : @white;
+@btn-danger-bg     : @ci-red;
+@btn-danger-border : @ci-red-dark;
+
+// - Success Button Variables
+@btn-success-color  : @white;
+@btn-success-bg     : @ci-green;
+@btn-success-border : @ci-green;
+
+// - Core Styles
+.btn {
+  border: 2px solid transparent;
+  text-transform: uppercase;
+  font-weight: @btnFontWeight;
+  &:active,
+  &.active {
+    .box-shadow(none);
+  }
+  &.disabled{
+    .button-variant(@ci-grey4; rgba(0,0,0,0); @ci-grey5); //(COLOR; BACKGROUND; BORDER);
+  }
+}
+
+// - Button Sizes (padding-vertical; padding-horizontal; font-size; line-height; border-radius)
+// -- Button MD
+.btn {
+  .button-size( ( 40px - @lineHeight - 2 * 2 ) / 2 ; 40px; @fontSize; @lineHeight; @radius;);
+}
+// -- Button LG
+.btn-lg {
+  .button-size( ( 60px - @lineHeight - 2 * 2 ) / 2 ; 60px; @fontSize; @lineHeight; @radius;);
+  @media (max-width: @screen-md-min) {
+    .button-size( ( 60px - @lineHeight - 2 * 2 ) / 2 ; 60px / 2; @fontSize; @lineHeight; @radius;);
+  }
+}
+// -- Button SM
+.btn-sm {
+  .button-size( ( 32px - @lineHeight-small - 2 * 2 ) / 2 ; 32px; @fontSize-small; @lineHeight-small; @radius;);
+}
+// -- Button XS
+.btn-xs {
+  .button-size( ( 24px - @lineHeight-small - 2 * 2 ) / 2 ; 24px / 2; @fontSize-small; @lineHeight-small; @radius-small;);
+}
+
+.btn-default {
+  .button-variant(@textColor; rgba(0,0,0,0); @borderColor);
+  &:hover {
+    border-color:@ci-grey4;
+  }
+}
+
+// - Link Button
+.btn-link {
+  color: @textColor;
+  font-weight: @btnFontWeight;
+  text-transform: initial;
+  &:first-letter {
+    text-transform: uppercase;
+  }
+  &:hover,
+  &:focus {
+    color: @textColor;
+  }
+}
+
+// - Success Button
+.btn-success {
+  .box-shadow(0 1px 0 @ci-green-dark);
+  &:active,
+  &.active {
+    .box-shadow(0 1px 0 @ci-green-dark);
+  }
+}
+
+// - Primary Button
+.btn-primary {
+  .box-shadow(0 1px 0 @ci-orange-dark);
+  &:active,
+  &.active {
+    .box-shadow(0 1px 0 @ci-orange-dark);
+  }
+}
+
+
+// Patch .button-variant Mixin
+.button-variant(@color; @background; @border) {
+  .transition(all 0.2s linear);
+  &:hover,
+  &:focus,
+  &:active,
+  &.active,
+  .open .dropdown-toggle {
+    border-color: darken(@border, 10%);
+    background-color: darken(@background, 10%);
+  }
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    &,
+    &:hover,
+    &:focus,
+    &:active,
+    &.active {
+      border-color: @ci-grey5;
+      background-color: @ci-grey5;
+      color: @ci-grey3;
+    }
+  }
+}
+
+.btn-group.open .dropdown-toggle {
+  &.btn-primary {
+    .box-shadow(0 1px 0 @ci-orange-dark);
+  }
+  &.btn-success {
+    .box-shadow(0 1px 0 @ci-green-dark);
+  }
+}
+
+
+
+// INPUT Sizes
+label {
+  margin-bottom: 5px;
+  font-weight: 700;
+  font-size: @fontSize-small;
+}
+
+.form-control {
+  padding: 10px;
+  height: 40px;
+  border: 1px solid @borderColor;
+  border-radius: 4px;
+  background-color: @ci-grey7;
+  color: @textColor;
+  font-size: @fontSize;
+  line-height: @lineHeight;
+  .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
+}
+
+// (input-height; padding-vertical; padding-horizontal; font-size; line-height; border-radius);
+
+.input {
+  &-lg { .input-size(60px; (60px-@lineHeight)/2; @fontSize; @fontSize; @lineHeight; @radius) }
+  &-sm { .input-size(32px; (32px-@lineHeight-small)/2 ; @fontSize-small; @fontSize-small; @lineHeight-small; @radius) }
+}
+
+input[type="file"] {
+  font-size: @fontSize-small;
+}
+
+// Headlines
+// -H1
+h1,
+.h1 {
+  text-transform: none;
+  font-family: @font-family-kievit; // use KIEVIT Font for H1 - rest has default font-family (extra class for this font is in _Base.less)
+  * {
+    font-family: @font-family-sans-serif;
+  }
+}
+
+// -H2 to H5
+h2,h3,h4,h5,
+.h2,.h3,.h4,.h5 {
+     font-weight: 600; //semibold headlines
+     text-transform: none;
+}
+
+// -H6
+h6,
+.h6 {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+
+// Page Header
+@page-header-border-color: @borderColor;
+
+
+// Patch mobile-first behaviour
+@media (max-width: @screen-md-min) {
+  .container-full{
+    min-width: 768px!important;
+  }
+}
+
+// Links transition
+a {
+  .transition(color .4s linear);
+  &:hover,
+  &:focus {
+    .transition(none);
+  }
+}
+
+// change size of the .lead class
+.lead {
+  font-size: ceil(@font-size-base * 1.57); // ~22px
+  font-size: ceil(@font-size-base * 1.14); // ~18px
+  font-weight: 600;
+  line-height: 1.4;
+
+  @media (min-width: @screen-sm-min) {
+    font-size: ceil(@font-size-base * 1.57); // ~22px
+  }
+}
+
+// Tables
+.table {
+  > thead,
+  > tbody,
+  > tfoot {
+    > tr {
+      > th {
+        border-top: 1px solid @ci-grey6;
+        padding: 8px 16px;
+      }
+      > td {
+        border-top: 1px solid @ci-grey6;
+        vertical-align: middle;
+        padding-left:16px;
+        padding-right: 8px;
+        @media (min-width: @screen-lg-min) {
+          padding-top:18px;
+          padding-bottom: 18px;
+        }
+      }
+    }
+  }
+  > thead > tr > th {
+    border-bottom: 1px solid @ci-grey5;
+  }
+  > caption + thead,
+  > colgroup + thead,
+  > thead:first-child {
+    > tr:first-child {
+      > th
+      > td {
+        border-top: 0;
+      }
+    }
+  }
+  > tbody + tbody {
+    border-top: 1px solid @ci-grey6;
+  }
+}
+// -Bordered Table
+.table-bordered {
+  border: 1px solid @ci-grey6;
+  > thead,
+  > tbody,
+  > tfoot {
+    > tr {
+      > th,
+      > td {
+        border: 1px solid @ci-grey6;
+      }
+    }
+  }
+  > thead > tr {
+    > th,
+    > td {
+      border-bottom-width: 1px;
+    }
+  }
+}
+// -Hover Table
+.table-hover > tbody > tr:hover {
+  > td,
+  > th {
+    background-color: @ci-grey7;
+  }
+}
+// -Condensed Table
+.table-condensed {
+  > thead,
+  > tbody,
+  > tfoot {
+    > tr {
+      > th,
+      > td {
+        @media (min-width: @screen-lg-min) {
+          padding-top:12px;
+          padding-bottom: 12px;
+        }
+      }
+    }
+  }
+}
+
+// -Responsive Table
+@media (max-width: @screen-xs-max) {
+  .table-responsive {
+    border: none;
+  }
+}
+
+// Button-Groups
+.btn-group {
+  .btn + .btn,
+  .btn + .btn-group,
+  .btn-group + .btn,
+  .btn-group + .btn-group {
+    margin-left: -2px; //because we use a 2px border
+  }
+}
+
+.btn-group {
+  .btn:not(.btn-default) + .btn:not(.btn-default){
+    margin-left: 1px;
+    &.btn-primary{
+      &:before {
+        content: "";
+        display: block;
+        height: 100%;
+        width: 1px;
+        left: -3px;
+        top: 0;
+        background: @ci-orange-dark;
+        position: absolute;
+        box-shadow: 0 3px 0 0 @ci-orange-dark, 0 -2px 0 0 @ci-orange-dark;
+      }
+    }
+    &.btn-success{
+      &:before {
+        content: "";
+        display: block;
+        height: 100%;
+        width: 1px;
+        left: -3px;
+        top: 0;
+        background: @ci-green-dark;
+        position: absolute;
+        box-shadow: 0 3px 0 0 @ci-green-dark, 0 -2px 0 0 @ci-green-dark;
+      }
+    }
+  }
+}
+
+
+.input-group-btn {
+  &:first-child > .btn {
+    margin-right: -2px;
+  }
+  &:last-child > .btn:not(:first-child) { //@TODO NEEDS TO BE FIXED
+    margin-left: -6px;
+  }
+}
+
+
+// The dropdown menu (ul)
+.dropdown-menu {
+  padding: 0;
+  border-radius: @radius;
+  font-size: @fontSize-small;
+  .box-shadow(none);
+  .divider {
+    margin: 0;
+    background:@borderColor
+  }
+  > li > a {
+    padding: 8px 12px;
+    color:@textColor;
+    font-weight: 600;
+  }
+}
+
+
+.help-block {
+  color: @ci-grey4; // lighten the text some for contrast
+  font-size: @fontSize-small;
+}
+
+.radio,
+.checkbox {
+  label {
+    font-size:@fontSize;
+  }
+}
+
+.form-control-focus(@color: @input-border-focus) {
+  &:focus {
+    outline: 0;
+    border-color: @ci-grey4;
+    .box-shadow(inset 0 1px 1px @ci-grey5);
+  }
+}
+
+.pagination {
+  border-radius: @radius;
+  > li {
+    > a,
+    > span {
+      padding: 9px 20px;
+      border: 1px solid @borderColor;
+      background-color: transparent;
+      color: @textColor;
+      font-weight: 700;
+      line-height: @lineHeight;
+    }
+    &:first-child {
+      > a,
+      > span {
+        .border-left-radius(@radius);
+      }
+    }
+    &:last-child {
+      > a,
+      > span {
+        .border-right-radius(@radius);
+      }
+    }
+  }
+  > li > a,
+  > li > span {
+    &:hover,
+    &:focus {
+      background-color: @ci-grey7;
+    }
+  }
+  > .active > a,
+  > .active > span {
+    &,
+    &:hover,
+    &:focus {
+      border-color: @borderColor;
+      background-color: @borderColor;
+      color: @white;
+    }
+  }
+}
+
+.pagination-lg {
+  .pagination-size(19px; 30px; @fontSize; @radius);
+}
+
+.pagination-sm {
+  .pagination-size(5px; 16px; @fontSize-small; @radius);
+}
+
+
+// Modal
+.modal-content {
+  position: relative;
+  border: none;
+  border-radius: @radius;
+  background-color: @white;
+  .box-shadow(0 0 0 rgba(0,0,0,0));
+}
+
+.modal-backdrop {
+  background-color: @ci-grey1;
+  &.in { .opacity(0.9); }
+}
+
+.modal-header {
+  border-bottom: none;
+  .close {
+    opacity: 1;
+    &:hover {
+      color:@ci-orange;
+    }
+  }
+}
+
+.modal-footer {
+  border-top: none;
+  margin-top: 0;
+}
+
+// Scale up the modal
+@media screen and (min-width: @screen-sm-min) {
+  .modal-dialog {
+    width: 720px;
+    padding: 0px;
+    .padding-top(2);
+    .margin-bottom(4);
+  }
+}
+
+
+// Popover
+.popover {
+  border: 1px solid @borderColor;
+  border-radius: @radius;
+  background-color: @white;
+  font-size: @fontSize-small;
+  opacity: 0;
+  .box-shadow(none);
+  &.top .arrow {
+    border-top-color: @borderColor;
+    &:after {
+      border-top-color: @white;
+    }
+  }
+  &.right .arrow {
+    border-right-color: @borderColor;
+    &:after {
+      border-right-color: @white;
+    }
+  }
+  &.bottom .arrow {
+    border-bottom-color: @borderColor;
+    &:after {
+      border-bottom-color: @white;
+    }
+  }
+  &.left .arrow {
+    border-left-color: @borderColor;
+    &:after {
+      border-left-color: @white;
+    }
+  }
+}
+.popover-title {
+  border-bottom: 1px solid @borderColor;
+  border-radius: @radius @radius 0 0;
+  background-color: @white;
+  font-weight: 700;
+  font-size: @fontSize-small;
+}
+
+//components-animation.less
+.collapsing {
+  .transition(height .35s cubic-bezier(0.680, -0.550, 0.265, 1.550));
+}
+
+// Retina images Mixin patch (bootstrap/mixins.less 348)
+// combine retinajs and bootstrap - no need to add second path
+.img-retina(@file-1x; @width-1x; @height-1x) {
+  background-image: url("@{file-1x}");
+  @file-2x: ~`@{file-1x}.replace(/\.\w+$/, function(match) { return "@2x" + match; })`; //from retinajs
+
+  @media
+  only screen and (-webkit-min-device-pixel-ratio: 2),
+  only screen and (   min--moz-device-pixel-ratio: 2),
+  only screen and (     -o-min-device-pixel-ratio: 2/1),
+  only screen and (        min-device-pixel-ratio: 2),
+  only screen and (                min-resolution: 192dpi),
+  only screen and (                min-resolution: 2dppx) {
+    background-image: url("@{file-2x}");
+    background-size: @width-1x @height-1x;
+  }
+}
+
+
+//code.less
+code {
+  color: @textColor;
+  background-color: @ci-grey7;
+  border-radius: @radius;
+  border:1px solid @borderColor;
+}
+
+
+//panel.less
+panel {
+  .box-shadow(none);
+}
+
+.panel-default {
+  .panel-variant(@borderColor; @textColor; @ci-grey7; @borderColor);
+}
+
+
+// placeholder should be italic
+::-webkit-input-placeholder {font-style:italic;} // webkit
+::-moz-placeholder {font-style:italic;} // firefox 19+
+input:-moz-placeholder {font-style:italic;} // firefox
+:-ms-input-placeholder {font-style:italic;} // ie
+
+
+
+

@@ -1,0 +1,108 @@
+@import '../vendor/lesshat/lesshat-prefixed.less'; // lesshat.com
+@import '../vendor/retinajs/retina-1.1.0.less'; // retinajs.com
+
+// No break don't break whitespace
+.nobreak{
+    white-space:nowrap;
+}
+
+// Kievit as extra class.
+// use it when kievit is needed
+.kievit {
+    font-family: @font-family-kievit;
+}
+
+// Pointer - pretending I'm a hyperlink
+.pointer {
+    cursor: pointer;
+}
+
+// Color classes
+.color-orange {
+    color:@ci-orange;
+}
+.color-green {
+    color:@ci-green;
+}
+.color-red {
+    color:@ci-red;
+}
+.color-blue {
+    color:@ci-blue;
+}
+.color-text {
+    color:@textColor;
+}
+
+// MARGIN
+.margin (@multiply) when (isnumber(@multiply)) {
+    @media(min-width:@screen-md-min){
+        margin: @marginDefault * @multiply @marginDefault * @multiply @marginDefault * @multiply @marginDefault * @multiply;
+    }
+    margin: @marginSmall * @multiply @marginSmall * @multiply @marginSmall * @multiply @marginSmall * @multiply;
+}
+
+.margin-top (@multiply) when (isnumber(@multiply)) {
+    @media(min-width:@screen-md-min){
+        margin-top: @marginDefault * @multiply;
+    }
+    margin-top: @marginSmall * @multiply;
+}
+
+.margin-right (@multiply) when (isnumber(@multiply)) {
+    @media(min-width:@screen-md-min){
+        margin-right: @marginDefault * @multiply;
+    }
+    margin-right: @marginSmall * @multiply;
+}
+
+.margin-bottom (@multiply) when (isnumber(@multiply)) {
+    @media(min-width:@screen-md-min){
+        margin-bottom: @marginDefault * @multiply;
+    }
+    margin-bottom: @marginSmall * @multiply;
+}
+
+.margin-left (@multiply) when (isnumber(@multiply)) {
+    @media(min-width:@screen-md-min){
+        margin-left: @marginDefault * @multiply;
+    }
+    margin-left: @marginSmall * @multiply;
+}
+
+
+// PADDING
+.pading (@multiply) when (isnumber(@multiply)) {
+    @media(min-width:@screen-md-min){
+        pading: @paddingDefault * @multiply @paddingDefault * @multiply @paddingDefault * @multiply @paddingDefault * @multiply;
+    }
+    pading: @paddingSmall * @multiply @paddingSmall * @multiply @paddingSmall * @multiply @paddingSmall * @multiply;
+}
+
+.padding-top (@multiply) when (isnumber(@multiply)) {
+    @media(min-width:@screen-md-min){
+        padding-top: @paddingDefault * @multiply;
+    }
+    padding-top: @paddingSmall * @multiply;
+}
+
+.padding-right (@multiply) when (isnumber(@multiply)) {
+    @media(min-width:@screen-md-min){
+        padding-right: @paddingDefault * @multiply;
+    }
+    padding-right: @paddingSmall * @multiply;
+}
+
+.padding-bottom (@multiply) when (isnumber(@multiply)) {
+    @media(min-width:@screen-md-min){
+        padding-bottom: @paddingDefault * @multiply;
+    }
+    padding-bottom: @paddingSmall * @multiply;
+}
+
+.padding-left (@multiply) when (isnumber(@multiply)) {
+    @media(min-width:@screen-md-min){
+        padding-left: @paddingDefault * @multiply;
+    }
+    padding-left: @paddingSmall * @multiply;
+}

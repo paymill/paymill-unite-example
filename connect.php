@@ -1,62 +1,101 @@
 <?php
+    session_start();
+
     require 'library/unite.php';
 
-    $scope        = str_replace(' ', '+', $scope);
-    $redirect_uri = urlencode($redirect_uri);
 
-    $queryString = 'client_id=' . $client_id . '&scope=' . $scope
-    . '&response_type=code&redirect_uri=' . $redirect_uri;
+    //https://connect.paymill.com/authorize/return?client_id=app_d28b5970e6f4be231c09f25dcce48341424b55782&scope=transactions_w+clients_w+payments_w+&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A81%2Fgithub_repos%2Fpaymill-unite-example%2Findex.php
+
+    if(!isset($_SESSION['userConfig'])) {
+
+        $queryString = 'client_id=' . $client_id . '&scope=' . $scope
+                . '&response_type=code&redirect_uri=' . $redirect_uri;
+        $queryStringVal =  'client_id=&scope=&response_type=code&redirect_uri=';
+
+        if(isset($_POST['scope']) && isset( $_POST['redirectUri']) && isset($_POST['clientId'])) {
+            $_SESSION['userConfig'] = array(
+                                                'bridgeUrl' => $_POST['bridgeUrl'],
+                                                'apiRoot' => $_POST['apiRoot'],
+                                                'paymillRoot' => $_POST['paymillRoot'],
+                                                'clientId' => $_POST['clientId'],
+                                                'clientSecret' => $_POST['clientSecret'],
+                                                'grantType' => $_POST['grantType'],
+                                                'scope' => $_POST['scope'],
+                                                'redirectUri' => $_POST['redirectUri']
+                                            );
+
+            $_SESSION['queryString'] = $queryString;
+
+            $scope =  $_SESSION['userConfig']['scope'];
+            $scopes = null;
+            foreach ($scope as $scopeVal) {
+                if( $scopes === null) {
+                    $scopes = $scopeVal;
+                } else {
+                    $scopes = $scopes.'%20'.$scopeVal;
+                }
+            }
+            $scope = $scopes;
+
+            $redirect_uri = $_SESSION['userConfig']['redirectUri'];
+            $redirect_uri = urlencode($redirect_uri);
+
+            $client_id =  $_SESSION['userConfig']['clientId'];
+
+            $queryStringVal = 'client_id=' . $client_id . '&scope=' . $scope
+            . '&response_type=code&redirect_uri=' . $redirect_uri;
+
+             $_SESSION['queryStringVal'] = $queryStringVal;
+        }
+    }
+
+    $queryStringVal = $_SESSION['queryStringVal'];
+    $queryString = $_SESSION['queryString'];
 
     $checksum = null;
-    if($hash = $_POST['hash_token']) {
-        $checksum = hash_hmac('sha256', $queryString, $hash);
-    }
+        if(isset($_POST['hash_token']))
+        {
+            if($hash = $_POST['hash_token']) {
+                $checksum = hash_hmac('sha256', $queryString, $hash);
+            }
 
-    if($checksum) {
-        $queryString .= '&checksum=' . $checksum;
-    }
+            if($checksum) {
+                $queryStringVal .= '&checksum=' . $checksum;
+                $_SESSION['checksum'] = $checksum;
+            }
+        }
+
 ?>
 <!DOCTYPE html>
 
 <html lang="en-gb">
 
 <head>
-    <script type="text/javascript" src="js/jquery-ui/js/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript" src="js/jquery-ui/js/jquery-ui-1.10.1.custom.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-ui/js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="assets/js/jquery-ui/js/jquery-ui-1.10.1.custom.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/screen.css">
 </head>
 
 <body>
     <div class="container">
-    <div class="header">
-        <h1><img src="img/icon.png" style="height: 27px; margin-bottom: 6px;" /> PAYMILL Unite Demo</h1>
-    </div>
 
-
-        <div class="panel panel-danger">
-          <div class="panel-heading">
-            <h3 class="panel-title">PAYMILL Unite connect button</h3>
-          </div>
-          <div class="panel-body">
-                <p>Include a button like this into your connect page.</p>
-
-                <a href="<?php echo $paymill_root . '/?' . $queryString ; ?>" class="btn btn-primary">
-                    Connect your PAYMILL account with this app.
-                </a>
-
-                <p><br>^ Click the button to test the behavior ^</p>
-          </div>
-          <ul class="list-group">
-            <li class="list-group-item">
-                Connecting App ID in this example:
-                <code><?php echo $client_id; ?></code>
-                (Can be changed in unite.php)
-            </li>
-          </ul>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="header">
+                    <h1><img src="assets/img/icon.png" style="height: 27px; margin-bottom: 6px;" /> PAYMILL Unite Demo</h1>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <ol class="breadcrumb">
+                  <li ><a href="index.php">1. Config</a></li>
+                  <li class="active">2. Connect</li>
+                  <li><a href="shopping-cart.php">3. Shopping Cart</a></li>
+                  <li><a href="refresh-token.php">4. Refresh Token</a></li>
+                </ol>
+            </div>
         </div>
-
 
         <div class="panel panel-danger">
           <div class="panel-heading">
@@ -71,6 +110,29 @@
           </div>
         </div>
 
+        <div class="panel panel-danger">
+          <div class="panel-heading">
+            <h3 class="panel-title">PAYMILL Unite connect button</h3>
+          </div>
+          <div class="panel-body">
+                <p>Include a button like this into your connect page.</p>
+                <p>
+                <a href="<?php echo $paymill_root . '/?' . $queryStringVal ; ?>" class="btn btn-primary">
+                    Connect your PAYMILL account with this app.
+                </a>
+                </p>
+                <p>The generated link based on your settings in <a href="connect.php">Step1 - Config</a>:</p>
+                <pre><?php echo $queryStringVal; ?></pre>
+                <p><br>*Click the button to test the behavior with your settings*</p>
+          </div>
+          <ul class="list-group">
+            <li class="list-group-item">
+                Connecting App ID in this example:
+                <code><?php echo $client_id; ?></code>
+                (Can be changed in unite.php)
+            </li>
+          </ul>
+        </div>
 
         <div class="panel panel-danger">
           <div class="panel-heading">
@@ -87,51 +149,52 @@
                 Now you should see the <em>hash token</em> for your app to generate the checksum out of the URL query string.
                 </p>
 
-                <p>
-                Use this form to generate the checksum for the current connect link (it will be automatically added to the example link above).
-                </p>
+                <?php
+                    if(!isset($_SESSION['checksum'])) {
+                ?>
+                    <p>
+                        Use this form to generate the checksum for the current connect link (it will be automatically added to the example link above).
+                    </p>
+                    <p>
+                    <form class="form-horizontal" action="" method="post" role="form">
+                        Please enter your App hash token:<br>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <input class="form-control" type="text" name="hash_token" placeholder="<enter-your-hash-token>" />
 
-                <p>
-                <form class="form-horizontal" action="" method="post" role="form">
-                    Please enter your App hash token:<br>
-                    <div class="form-group">
-                        <div class="col-sm-4">
-                            <input class="form-control" type="text" name="hash_token" placeholder="<enter-your-hash-token>" />
-
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="btn btn-default" type="submit" value="Generate" />
+                            </div>
                         </div>
-                        <div class="col-sm-3">
-                            <input class="btn btn-default" type="submit" value="Generate" />
-                        </div>
-                    </div>
-
-
-
-                </form>
-                </p>
-
-                <?php if($checksum): ?>
-                <p>
-                <strong>Checksum:</strong>
-                <code><?php echo $checksum; ?></code>
-                </p>
-                <?php endif; ?>
+                    </form>
+                    </p>
+                <?php } else { ?>
+                    <p>
+                    <strong>Checksum:</strong>
+                    <code><?php echo $_SESSION['checksum']; ?></code>
+                    </p>
+                <?php }; ?>
 
                 <p><a href="https://paymill.com/en-gb/unite-documentation/">Read more about checksum validation.</a></p>
           </div>
         </div>
 
-        <p>
-          <a href="." class="btn btn-primary btn-sm">
-            <span class="glyphicon glyphicon-chevron-left"></span>
+        <div>
+          <a href="." class="btn btn-success btn-sm pull-left">
+            <span class="glyphicon glyphicon-chevron-left "></span>
             Back to intro
          </a>
-         <a href="shopping-cart.php" class="btn btn-primary btn-sm">
+         <a href="shopping-cart.php" class="btn btn-success btn-sm pull-right">
             Do a test transaction
-            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="glyphicon glyphicon-chevron-right "></span>
          </a>
-        </p>
+        </div>
 
-        <p>&copy; PAYMILL GmbH</p>
+        <div class="Footer">
+            <p>&copy; PAYMILL GmbH</p>
+        </div>
+
         </div>
 </body>
 
