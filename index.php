@@ -139,7 +139,7 @@
                     <tr>
                         <td>Redirect URI</td>
                         <td><p>Your script which handles the returning authorization data (e.g. access keys etc.).</p></td>
-                        <td><input type="text" name="redirectUri"  placeholder="<?php echo $redirect_uri; ?>" /> </td>
+                        <td><input type="text" name="redirectUri"  value="<?php echo $redirect_uri; ?>" /> </td>
                     </tr>
                 </tbody>
             </table>

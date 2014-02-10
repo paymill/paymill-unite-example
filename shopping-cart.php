@@ -226,7 +226,9 @@
           </a>
         </p>
 
-        <p>&copy; PAYMILL GmbH</p>
+         <div class="Footer">
+            <p>&copy; PAYMILL GmbH</p>
+        </div>
 
         </div>
     </body>

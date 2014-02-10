@@ -4,7 +4,6 @@
     require 'library/unite.php';
 
 
-    //https://connect.paymill.com/authorize/return?client_id=app_d28b5970e6f4be231c09f25dcce48341424b55782&scope=transactions_w+clients_w+payments_w+&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A81%2Fgithub_repos%2Fpaymill-unite-example%2Findex.php
 
     if(!isset($_SESSION['userConfig'])) {
 
@@ -32,7 +31,7 @@
                 if( $scopes === null) {
                     $scopes = $scopeVal;
                 } else {
-                    $scopes = $scopes.'%20'.$scopeVal;
+                    $scopes = $scopes.'+'.$scopeVal;
                 }
             }
             $scope = $scopes;
@@ -51,16 +50,18 @@
 
     $queryStringVal = $_SESSION['queryStringVal'];
     $queryString = $_SESSION['queryString'];
+    $client_id = $_SESSION['userConfig']['clientId'];
 
     $checksum = null;
         if(isset($_POST['hash_token']))
         {
             if($hash = $_POST['hash_token']) {
-                $checksum = hash_hmac('sha256', $queryString, $hash);
+                $checksum = hash_hmac('sha256', $queryStringVal, $hash);
             }
 
             if($checksum) {
                 $queryStringVal .= '&checksum=' . $checksum;
+                $_SESSION['queryStringVal'] = $queryStringVal;
                 $_SESSION['checksum'] = $checksum;
             }
         }

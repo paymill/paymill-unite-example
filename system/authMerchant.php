@@ -1,4 +1,6 @@
 <?php
+    session_start();
+
     include '../library/unite.php';
 
     $success = false;
@@ -18,12 +20,21 @@
     if ($code) {
         $url = $paymill_root . '/token';
         $fields_string = '';
-        $fields = array(
+        /*$fields = array(
             'grant_type'    => $grant_type,
             'scope'         => 'transactions_w clients_w payments_w refunds_w webhooks_w',
             'code'          => $code,
             'client_id'     => $client_id,
             'client_secret' => $client_secret
+        );
+*/
+
+        $fields = array(
+            'grant_type'    =>  $_SESSION['userConfig']['grantType'] ,
+            'scope'         => 'transactions_w clients_w payments_w refunds_w webhooks_w',
+            'code'          =>  $code,
+            'client_id'     =>  $_SESSION['userConfig']['clientId'] ,
+            'client_secret' =>  $_SESSION['userConfig']['clientSecret']
         );
 
         foreach($fields as $key=>$value) {
@@ -99,7 +110,7 @@
     <script type="text/javascript" src="../assets/js/jquery-ui/assets/js/jquery-ui-1.10.1.custom.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/assets/js/bootstrap.min.js"></script>
 
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../assets/css/screen.css">
     <!-- link rel="stylesheet" href="../css/screen.css" type="text/css" / -->
 </head>
 
@@ -131,8 +142,8 @@
             <h3 class="panel-title">Merchant allows test requests</h3>
           </div>
           <div class="panel-body">
-            Test public key:  <code><?php echo $accessKeys['test']['public_key']; ?></code><br>
-            Test private key: <code><?php echo $accessKeys['test']['private_key']; ?></code>
+            <p>Test public key:  <code><?php echo $accessKeys['test']['public_key']; ?></code></p>
+            <p>Test private key: <code><?php echo $accessKeys['test']['private_key']; ?></code></p>
           </div>
           <ul class="list-group">
             <li class="list-group-item">Token type: <code><?php echo $result['token_type']; ?></code></li>
@@ -146,8 +157,8 @@
                 <h3 class="panel-title">Merchant allows live requests</h3>
               </div>
               <div class="panel-body">
-                Live public key:  <code><?php echo $accessKeys['live']['public_key']; ?></code><br>
-                Live private key: <code><?php echo $accessKeys['live']['private_key']; ?></code>
+                <p>Live public key:  <code><?php echo $accessKeys['live']['public_key']; ?></code></p>
+                <p>Live private key: <code><?php echo $accessKeys['live']['private_key']; ?></code></p>
               </div>
               <ul class="list-group">
                 <li class="list-group-item">Token type: <code><?php echo $result['token_type']; ?></code></li>
@@ -246,17 +257,19 @@
 
 
         <p><br>
-          <a href="../connect.php" class="btn btn-primary btn-sm">
+          <a href="../connect.php" class="btn btn-success btn-sm pull-left">
             <span class="glyphicon glyphicon-chevron-left"></span>
             Back to connect page
           </a>
-          <a href="../shopping-cart.php" class="btn btn-primary btn-sm">
+          <a href="../shopping-cart.php" class="btn btn-success btn-sm pull-right">
             Do a test transaction
             <span class="glyphicon glyphicon-chevron-right"></span>
           </a>
         </p>
 
-        <p>&copy; PAYMILL GmbH</p>
+        <div class="Footer">
+            <p>&copy; PAYMILL GmbH</p>
+        </div>
     </div>
 </body>
 
