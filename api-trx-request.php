@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 /**
  * Test-PHP for Paymill API, minimum example
  *
@@ -12,17 +12,26 @@ include 'library/unite.php';
 //define vars
 set_include_path(implode(PATH_SEPARATOR, array( realpath(realpath(dirname(__FILE__)) . '/library'), get_include_path(), )));
 
-// This must be the only value you send via the form:
-$token  = $_POST['paymillToken'];
 
 // Don't get this values from the form to avoid manipulation:
-$amount   = 250;
-$currency = 'EUR';
-$fee      = 0;
+if(!isset($_SESSION['payment'])) {
 
-// Payment object which is needed for the fee collection:
-
-$fee_payment = null; //'<YOUR-MERCHANTS-PAYMENT-ID>';
+	// This must be the only value you send via the form:
+	$token  = $_POST['paymillToken'];
+	$amount   = 250;
+	$currency = 'EUR';
+	$fee      = 0;
+	// Payment object which is needed for the fee collection:
+	$fee_payment = null; //'<YOUR-MERCHANTS-PAYMENT-ID>';
+} else {
+	// This must be the only value you send via the form:
+	$token  = $_SESSION['payment']['paymillToken'];
+	$amount   = $_POST['card-amount'];
+	$currency = $_POST['card-currency'];
+	$fee      = $_POST['card-fee'];
+	// Payment object which is needed for the fee collection:
+	$fee_payment = $_SESSION['payment']['id'];
+}
 
 // The connected merchant need to be a client of your app with a valid
 // payment object. Normally you would ask your merchant to register a payment
@@ -45,6 +54,8 @@ if ($token) {
         $params['fee_payment'] = $fee_payment;
         $params['fee'] = $fee;
     }
+
+    var_dump($params);
 
 	$transaction = $transactionsObject->create($params);
     // The return of the "create" method is an array with transaction

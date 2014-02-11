@@ -1,6 +1,26 @@
 <?php
-
+    session_start();
     include 'library/unite.php';
+
+    //var_dump($_SESSION['payment']);exit;
+
+    $disabled = "";
+    $last4 = "";
+    $cardholder = "";
+    $expiredate =  "";
+    $payment_id =  "";
+
+
+    if(!isset($_SESSION['payment']))
+    {
+        $disabled = "disabled";
+    } else {
+        $last4 =  $_SESSION['payment']['last4'];
+        $cardholder = $_SESSION['payment']['card_holder'] ;
+        $expiredate = $_SESSION['payment']['expire_month']. ' / ' . $_SESSION['payment']['expire_year'] ;
+        $payment_id = $_SESSION['payment']['id'];
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en-gb">
@@ -16,6 +36,7 @@
             var PAYMILL_PUBLIC_KEY = '<?php echo $public_key; ?>';
 
             $(document).ready(function() {
+                //Without fee
                 $("#payment-form").submit(function(event) {
                     $(".payment-errors").text('');
                     $('.api-response').addClass('hidden');
@@ -48,7 +69,21 @@
 
                     return false;
                 });
+
+                // fee
+                $("#payment-form-fee").submit(function(event) {
+                    $(".payment-errors").text('');
+                    $('.api-response').addClass('hidden');
+
+                    // Deactivate submit button to avoid further clicks
+                    $('.submit-button').attr("disabled", "disabled");
+
+                    PaymillResponseHandlerFee();
+
+                    return false;
+                });
             });
+
 
             function PaymillResponseHandler(error, result) {
                 if (error) {
@@ -80,6 +115,33 @@
                     );
                 }
             }
+
+            function PaymillResponseHandlerFee(error, result) {
+                if (error) {
+                    // Shows the error above the form
+                    $(".payment-errors").text(error.apierror);
+                    $(".submit-button").removeAttr("disabled");
+                } else {
+                    var form = $("#payment-form-fee");
+
+                    $.post(
+                        "api-trx-request.php",
+                        $("#payment-form-fee").serialize(),
+                        function(result) {
+                            //very simple frontend test if API response sets transaction to closed
+                            if(result.indexOf('closed') != -1) {
+                                $('.api-response .panel-body').html('<span style="color: #009900">Transaction successfully done!</span><br><br><pre class="pre-scrollable">'+ result +'</pre>');
+                            }
+                            else {
+                                $('.api-response .panel-body').html('<span style="color: #ff0000;font-weight: normal">There was an error.</span>');
+                            }
+                            $('.api-response').removeClass('hidden');
+                        },
+                        'text'
+                    );
+                }
+            }
+
         </script>
 
     </head>
@@ -151,67 +213,115 @@
           <div class="panel-footer"><a href="#" onclick="$('.api-response').addClass('hidden'); return false;">close</a></div>
         </div>
 
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="panel panel-default ">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Demo payment form - without fee</h3>
 
-        <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">Demo payment form</h3>
+                  </div>
+                  <div class="panel-body">
+                        <form role="form" id="payment-form" >
+                            <div class="payment-errors"> </div>
 
-          </div>
-          <div class="panel-body">
-                <form role="form" id="payment-form" class="col-md-4">
-                    <div class="payment-errors"> </div>
+                            <div class="form-group">
+                                <label>Card number</label>
+                                <input class="card-number form-control" type="text" size="20" value="4111111111111111" />
+                            </div>
+                            <div class="form-group">
+                                <label>CVC</label>
+                                <input class="card-cvc form-control" type="text" size="4" value="111" />
+                            </div>
+                            <div class="form-group">
+                                <label>Holder name</label>
+                                <input class="card-holdername form-control" type="text" size="20" value="lala" />
+                            </div>
 
-                    <div class="form-group">
-                        <label>Card number</label>
-                        <input class="card-number form-control" type="text" size="20" value="4111111111111111" />
-                    </div>
-                    <div class="form-group">
-                        <label>CVC</label>
-                        <input class="card-cvc form-control" type="text" size="4" value="111" />
-                    </div>
-                    <div class="form-group">
-                        <label>Holder name</label>
-                        <input class="card-holdername form-control" type="text" size="20" value="lala" />
-                    </div>
+                            <div class="form-group">
+                                <label>Expire date (MM/YYYY)</label>
+                                <div class="row">
+                                    <div class="col-md-3"><input class="card-expiry-month form-control" type="text" size="2" value="12" /></div>
+                                    <div class="col-md-4"><input class="card-expiry-year form-control" type="text" size="4" value="2016" /></div>
+                                </div>
+                            </div>
 
-                    <div class="form-group">
-                        <label>Expire date (MM/YYYY)</label>
-                        <div class="row">
-                            <div class="col-md-3"><input class="card-expiry-month form-control" type="text" size="2" value="12" /></div>
-                            <div class="col-md-4"><input class="card-expiry-year form-control" type="text" size="4" value="2016" /></div>
-                        </div>
-                    </div>
+                            <div class="form-group">
+                                <label>Price (in Cent)</label>
+                                <input readonly class="card-amount form-control" name="card-amount" type="text" value="250" size="20" />
+                            </div>
+                            <?php if($public_key): ?>
+                            <button class="btn btn-sm btn-primary" type="submit" >Buy now</button>
+                            <?php endif; ?>
+                        </form>
+                   </div>
+                   <div class="panel-footer">
+                       <?php if($public_key): ?>
+                           Used public key: <code><?php echo $public_key; ?></code><br>
+                           Live key: <code><strong><?php echo $is_live ? 'yes!!!' : 'no'; ?></strong></code>
+                       <?php else: ?>
+                           <h3>Do don't have access keys yet. Please first connect a merchant:</h3>
+                           <a href="connect.php" class="btn btn-primary btn-sm">
+                              Connect page
+                           </a>
+                       <?php endif; ?>
+                   </div>
+                </div>
+            </div>
 
-                    <div class="form-group">
-                        <label>Price (in Cent)</label>
-                        <input readonly class="card-amount form-control" name="card-amount" type="text" value="250" size="20" />
-                    </div>
-                    <div class="form-group">
-                        <label>Fee (in Cent)</label>
-                        <input readonly class="card-fee form-control" name="card-fee" type="text" value="0" size="20" />
-                    </div>
-                    <div class="form-group">
-                        <label>Currency</label>
-                        <input readonly class="card-currency form-control" name="card-currency" type="text" value="EUR" size="20" />
-                    </div>
-                    <?php if($public_key): ?>
-                    <button class="btn btn-sm btn-success" type="submit">Buy now</button>
-                    <?php endif; ?>
-                </form>
-           </div>
-           <div class="panel-footer">
-               <?php if($public_key): ?>
-                   Used public key: <code><?php echo $public_key; ?></code><br>
-                   Live key: <code><strong><?php echo $is_live ? 'yes!!!' : 'no'; ?></strong></code>
-               <?php else: ?>
-                   <h3>Do don't have access keys yet. Please first connect a merchant:</h3>
-                   <a href="connect.php" class="btn btn-primary btn-sm">
-                      Connect page
-                   </a>
-               <?php endif; ?>
-           </div>
+
+            <div class="col-xs-6">
+                <div class="panel panel-default ">
+                  <div class="panel-heading">
+                    <h3 class="panel-title">Demo payment form - with fee</h3>
+
+                  </div>
+                  <div class="panel-body">
+                        <form role="form" id="payment-form-fee" >
+                            <div class="payment-errors"> </div>
+
+                            <h4>Uses the Payment generated in Step 2 - Config:</h4>
+                            <p>
+                                <label>Card number (last 4)</label>: <?php echo $last4; ?>
+                            </p>
+                            <p>
+                                <label>Holder name</label>: <?php echo $cardholder; ?>
+                            </p>
+                            <p>
+                                <label>Expire date (MM/YYYY): </label><?php echo $expiredate; ?>
+                            </p>
+
+                            <div class="form-group">
+                                <label>Price (in Cent)</label>
+                                <input  class="card-amount form-control" name="card-amount" type="text" value="250" size="20" />
+                            </div>
+                            <div class="form-group">
+                                <label>Fee (in Cent)</label>
+                                <input  class="card-fee form-control" name="card-fee" type="text" value="0" size="20" />
+                            </div>
+                            <div class="form-group">
+                                <label>Currency</label>
+                                <input  class="card-currency form-control" name="card-currency" type="text" value="EUR" size="20" />
+                            </div>
+                            <?php if($public_key): ?>
+                            <button class="btn btn-sm btn-primary" type="submit" <?php echo $disabled; ?>>Buy now</button>
+                            <?php endif; ?>
+                        </form>
+                   </div>
+                   <div class="panel-footer">
+                       <?php if($public_key): ?>
+                           Used public key: <code><?php echo $public_key; ?></code><br>
+                           Live key: <code><strong><?php echo $is_live ? 'yes!!!' : 'no'; ?></strong></code>
+                       <?php else: ?>
+                           <h3>Do don't have access keys yet. Please first connect a merchant:</h3>
+                           <a href="connect.php" class="btn btn-primary btn-sm">
+                              Connect page
+                           </a>
+                       <?php endif; ?>
+                       <br>Used payment_id: <code><?php echo $payment_id; ?></code>
+                   </div>
+                </div>
+            </div>
         </div>
-
         <p>
           <a href="." class="btn btn-success btn-sm pull-left">
             <span class="glyphicon glyphicon-chevron-left"></span>
