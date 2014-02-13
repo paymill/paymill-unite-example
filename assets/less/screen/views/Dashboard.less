@@ -1,0 +1,53 @@
+/* ---------------------------------------------------------------------------------
+ *
+ * WIDGETS
+ *
+ */
+
+
+// Widget - overview
+.widget-overview {
+  .make-xs-column(12);
+  background: @ci-grey7;
+  border-radius: @radius;
+
+  .trend {
+    .make-xs-column(6);
+    .make-lg-column(3);
+    border-right: 1px solid @borderColor;
+    padding: 30px 16px 40px 16px;
+
+    h2 {
+      font-size:@fontSize;
+      margin:0 0 30px 0;
+    }
+
+    .value {
+      font-size:@font-size-h2;
+      font-weight: 600;
+    }
+
+    .comparison {
+      color:@ci-grey4;
+    }
+
+    &:nth-child(2n){
+      border-right:none;
+    }
+    &:nth-child(4n+4), &:nth-child(4n+3) {
+        border-top:1px solid @borderColor;
+    }
+
+    @media(min-width:@screen-lg-min){
+      &:nth-child(2n){
+        border-right: 1px solid @borderColor;
+      }
+      &:last-child{
+        border-right: none;
+      }
+      &:nth-child(4n+4), &:nth-child(4n+3) {
+          border-top:none;
+      }
+    }
+  }
+}

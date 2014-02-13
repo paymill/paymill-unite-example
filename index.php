@@ -3,13 +3,13 @@
 
     include 'library/unite.php';
 
-    $scopes = array();
+    $scopes = "";
 
     if(isset($_SESSION['userConfig'])) {
         $client_id = $_SESSION['userConfig']['clientId'];
         $client_secret = $_SESSION['userConfig']['clientSecret'];
         $redirect_uri = $_SESSION['userConfig']['redirectUri'];
-        $scopes =  $_SESSION['userConfig']['scope'];
+        $scopes = $_SESSION['userConfig']['scope'];
     }
 
 ?>
@@ -17,13 +17,46 @@
 <html lang="en-gb">
     <head>
         <link rel="stylesheet" href="assets/css/screen.css">
+        <script type="text/javascript" src="assets/js/jquery/jquery-1.10.1.min.js"></script>
+        <script type="text/javascript" src="assets/js/jquery/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="assets/js/bootstrap/bootstrap.min.js"></script>
+        <script type="text/javascript" src="assets/js/main-ck.js"></script>
     </head>
 
     <body>
+    <section id="Sidebar">
+    <div id="TopBar">
+      <a href="#" id="PushSidebar" class="burgermenu"><i class="fa fa-bars"></i></a>
+      <h1 id="Branding">PAYMILL Unite Demo</h1>
+    </div>
+    <nav>
+        <ul>
+            <li  class="active">
+                <a href="#" ><i class="fa fa-code fa-fw"></i>1. Configuration</a>
+            </li>
+             <li >
+                <a href="#">
+                    <i class="fa fa-code fa-fw "></i>2. Connect
+                </a>
+                <ol class="">
+                    <li><a href="connect.php">Connect to a Merchant</a></li>
+                    <li><a href="payment.php">Payment</a></li>
+                </ol>
+            </li>
+             <li>
+                <a href="shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
+            </li>
+             <li>
+                <a href="refreshtoken.php"><i class="fa fa-code fa-fw"></i>4. Refresh Token</a>
+            </li>
+        </ul>
+    </nav>
+    </section>
+
+    <div id="Content">
         <form method="post" action="connect.php" class="configForm">
         <div class="container">
-
+<!--
         <div class="row">
             <div class="col-lg-7">
                 <div class="header">
@@ -39,7 +72,7 @@
                 </ol>
             </div>
         </div>
-
+ -->
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">Welcome to the PAYMILL Unite demo</h3>
@@ -52,8 +85,34 @@
           </div>
         </div>
 
-
         <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Next steps</h3>
+              </div>
+              <div class="panel-body">
+                <p>The normal PAYMILL Unite workflow would be as follwed:</p>
+                <ol>
+                    <li>
+                        Direct your merchant to a page were you implemented your individual PAYMILL Connect link/button.
+                        The button could look like our <a href="connect.php">example</a>.
+                    </li>
+                    <li>
+                        The button will send your merchant to the <a href="https://connect.paymill.com">PAYMILL Connect</a> page, were he can authorize your request.
+                    </li>
+                    <li>
+                        After the authorization the merchant will be redirected to your above defined redirect URI, were the received access keys are stored.
+                    </li>
+                    <li>
+                        Now if everything worked well, you can do a test transaction with our shopping cart <a href="shopping-cart.php">example</a>.<br>
+                        <i>If you want to do a transaction with a fee, you have to do a <a href="payment.php">payment</a> before.</i>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+
+
+        <div class="panel panel-danger">
           <div class="panel-heading">
             <h3 class="panel-title">Current configuration</h3>
           </div>
@@ -109,14 +168,14 @@
                         <td>
                             <p>Equivalent to your App ID. Can be found in <br><em><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> App -> App details</em></p>
                         </td>
-                        <td><input type="text" name="clientId"  placeholder="<?php echo $client_id; ?>" /> </td>
+                        <td><input type="text" name="clientId"  placeholder="<?php echo $client_id; ?>" value="<?php echo $client_id; ?>" /> </td>
                     </tr>
                     <tr>
                         <td><strong>Client Secret</strong></td>
                         <td>
                             <p>Needed for authentication. Can be found in <br><em><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> App -> App details</em></p>
                         </td>
-                        <td><input type="text" name="clientSecret"  placeholder="<?php echo $client_secret; ?>" value=""/> </td>
+                        <td><input type="text" name="clientSecret"  placeholder="<?php echo $client_secret; ?>" value="<?php echo $client_secret; ?>"/> </td>
                     </tr>
                     <tr>
                         <td>Grant type</td>
@@ -126,13 +185,29 @@
                     <tr>
                         <td>Scope</td>
                         <td><p>Permissions you are asking for.<p></td>
-                        <td >
+                        <td>
                             <div class="checkbox">
-                                <label><input type="checkbox" name="scope[]" value="transactions_w" <?php if(in_array('transactions_w', $scopes) === true) { echo "disabled checked"; } ?> >transactions_w</label><br>
-                                <label><input type="checkbox" name="scope[]" value="clients_w" <?php if(in_array('clients_w', $scopes) === true) { echo "disabled checked"; } ?>>clients_w</label><br>
-                                <label><input type="checkbox" name="scope[]" value="payments_w" <?php if(in_array('payments_w', $scopes) === true) { echo "disabled checked"; } ?>>payments_w</label><br>
-                                <label><input type="checkbox" name="scope[]" value="refunds_w" <?php if(in_array('refunds_w', $scopes) === true) { echo "disabled checked"; } ?>>refunds_w</label><br>
-                                <label><input type="checkbox" name="scope[]" value="webhooks_w" <?php if(in_array('webhooks_w', $scopes) === true) { echo "disabled checked"; } ?>>webhooks_w</label>
+                                <div class="col-xs-4">
+                                    <label><input type="checkbox" name="scope[]" value="transactions_w" <?php if(strpos($scopes, 'transactions_w') !== false) { echo " checked"; } ?> >transactions_w</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="clients_w" <?php if(strpos($scopes, 'clients_w') !== false) { echo " checked"; } ?>>clients_w</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="payments_w" <?php if(strpos($scopes, 'payments_w') !== false) { echo " checked"; } ?>>payments_w</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="refunds_w" <?php if(strpos($scopes, 'refunds_w') !== false) { echo " checked"; } ?>>refunds_w</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="webhooks_w" <?php if(strpos($scopes, 'webhooks_w') !== false) { echo " checked"; } ?>>webhooks_w</label>
+                                </div>
+                                <div class="col-xs-4">
+                                    <label><input type="checkbox" name="scope[]" value="transactions_r" <?php if(strpos($scopes, 'transactions_r') !== false) { echo " checked"; } ?> >transactions_r</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="clients_r" <?php if(strpos($scopes, 'clients_r') !== false) { echo " checked"; } ?>>clients_r</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="payments_r" <?php if(strpos($scopes, 'payments_r') !== false) { echo " checked"; } ?>>payments_r</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="refunds_r" <?php if(strpos($scopes, 'refunds_r') !== false) { echo " checked"; } ?>>refunds_r</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="webhooks_r" <?php if(strpos($scopes, 'webhooks_r') !== false) { echo " checked"; } ?>>webhooks_r</label>
+                                </div>
+                                <div class="col-xs-4">
+                                    <label><input type="checkbox" name="scope[]" value="transactions_rw" <?php if(strpos($scopes, 'transactions_rw') !== false) { echo " checked"; } ?> >transactions_rw</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="clients_rw" <?php if(strpos($scopes, 'clients_rw') !== false) { echo " checked"; } ?>>clients_rw</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="payments_rw" <?php if(strpos($scopes, 'payments_rw') !== false) { echo " checked"; } ?>>payments_rw</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="refunds_rw" <?php if(strpos($scopes, 'refunds_rw') !== false) { echo " checked"; } ?>>refunds_rw</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="webhooks_rw" <?php if(strpos($scopes, 'webhooks_rw') !== false) { echo " checked"; } ?>>webhooks_rw</label>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -145,36 +220,14 @@
             </table>
             </form>
           </div>
-          <div class="panel-footer">File: <code>library/unite.php</code></div>
-        </div>
-
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Next steps</h3>
-              </div>
-              <div class="panel-body">
-                <p>The normal PAYMILL Unite workflow would be as follwed:</p>
-                <ol>
-                    <li>
-                        Direct your merchant to a page were you implemented your individual PAYMILL Connect link/button.
-                        The button could look like our <a href="connect.php">example</a>.
-                    </li>
-                    <li>
-                        The button will send your merchant to the <a href="https://connect.paymill.com">PAYMILL Connect</a> page, were he can authorize your request.
-                    </li>
-                    <li>
-                        After the authorization the merchant will be redirected to your above defined redirect URI, were the received access keys are stored.
-                    </li>
-                    <li>
-                        Now if everything worked well, you can do a test transaction with our shopping cart <a href="shopping-cart.php">example</a>.
-                    </li>
-                </ol>
-            </div>
-        </div>
+        <div class="panel-footer">File: <code>library/unite.php</code></div>
+    </div>
 
         <p>
-           <input type="submit" class="btn btn-success pull-right"  value="Go on with the connect button example">
+            <button type="submit" class="btn btn-success pull-right">
+                Go on with the connect button example
+                <span class="glyphicon glyphicon-chevron-right "></span>
+            </button>
         </p>
 
         <div class="Footer">
@@ -183,6 +236,7 @@
 
         </div>
     </form>
+</div>
     </body>
 
 </html>

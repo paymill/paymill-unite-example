@@ -8987,11 +8987,6 @@ input:-moz-placeholder {
 }
 html {
   -webkit-font-smoothing: antialiased;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -o-user-select: none;
-  user-select: none;
   cursor: default;
 }
 body {
@@ -9000,6 +8995,11 @@ body {
   min-width: 768px;
   -webkit-transition: left 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   transition: left 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+@media (min-width: 992px) {
+  body {
+    padding-left: 240px;
+  }
 }
 body.pushed-body {
   position: relative;
@@ -11267,6 +11267,217 @@ i.status-chargeback:after {
   border-right-width: 0;
   border-left-color: #ffffff;
   bottom: -10px;
+}
+#Sidebar {
+  width: 240px;
+  height: 100%;
+}
+#Sidebar #TopBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  height: 60px;
+  border-bottom: 1px solid #bdc5c8;
+  background: #ffffff;
+  text-align: right;
+  /*#UserSettings {
+            display: inline-block;
+            .btn-group {
+                >span {
+                    display: block;
+                    height:60px;
+                    cursor: pointer;
+                    >span {
+                        display:block;
+                        float:left;
+                        overflow:hidden;
+                        padding: (60px-@lineHeight)/2 0;
+                        min-width: 300px;
+                        max-width: 300px;
+                        height:@lineHeight;
+                        height:60px;
+                        text-overflow:ellipsis;
+                        // different max-width per view
+                        @media(min-width:@screen-sm-min){ max-width: 590px; }
+                        @media(min-width:@screen-md-min){ max-width: 635px; }
+                        @media(min-width:@screen-lg-min){ max-width: 862px; }
+                    }
+                    >i {
+                        display:block;
+                        float:left;
+                        padding: (60px-@lineHeight)/2 0;
+                        height:60px;
+                    }
+                }
+                &.open > span {
+                    .box-shadow(none);
+                }
+                ul.dropdown-menu {
+                    width: 100%;
+                    .text-left;
+                    li.name {
+                        padding:8px 12px;
+                    }
+                }
+            }
+        }//#UserSettings*/
+}
+#Sidebar #TopBar .burgermenu {
+  position: relative;
+  left: 0;
+  z-index: 99999;
+  display: block;
+  float: left;
+  width: 60px;
+  height: 59px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #424a4d;
+  text-align: center;
+  text-decoration: none;
+  font-size: 28px;
+  line-height: 60px;
+  -webkit-transition: left 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition: left 0.35s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  #Sidebar #TopBar .burgermenu,
+  tr#Sidebar #TopBar .burgermenu,
+  th#Sidebar #TopBar .burgermenu,
+  td#Sidebar #TopBar .burgermenu {
+    display: none !important;
+  }
+}
+@media (min-width: 1200px) {
+  #Sidebar #TopBar .burgermenu,
+  tr#Sidebar #TopBar .burgermenu,
+  th#Sidebar #TopBar .burgermenu,
+  td#Sidebar #TopBar .burgermenu {
+    display: none !important;
+  }
+}
+#Sidebar #TopBar #Branding {
+  height: 40px;
+  padding: 0px 20px;
+  float: left;
+  color: #f05000;
+  margin-left: 240px;
+}
+#Sidebar > nav {
+  position: fixed;
+  top: 0;
+  left: -240px;
+  z-index: 11;
+  width: 240px;
+  height: 100%;
+  border-right: 1px solid #212526;
+  background: #424a4d;
+  -webkit-transition: left 0.3s ease;
+  transition: left 0.3s ease;
+}
+@media (min-width: 992px) {
+  #Sidebar > nav {
+    left: 0;
+  }
+}
+#Sidebar > nav > ul {
+  padding: 0;
+  border-bottom: 1px solid #212526;
+  list-style: none;
+}
+#Sidebar > nav > ul > li {
+  border-top: 1px solid #212526;
+}
+#Sidebar > nav > ul > li:first-child {
+  border-top: none;
+}
+#Sidebar > nav > ul > li > a {
+  display: block;
+  padding: 20px 16px;
+  color: #bdc5c8;
+  text-decoration: none;
+  font-weight: 700;
+  line-height: 20px;
+  -webkit-transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease;
+}
+#Sidebar > nav > ul > li > a:hover {
+  background-color: #373e40;
+  -webkit-transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease;
+}
+#Sidebar > nav > ul > li > a:hover i {
+  color: #16181a;
+}
+#Sidebar > nav > ul > li > a i {
+  margin-right: 8px;
+  color: #212526;
+}
+#Sidebar > nav > ul > li ul {
+  display: none;
+}
+#Sidebar > nav > ul > li.active > a {
+  background: #2c3133;
+}
+#Sidebar > nav > ul > li.active > a i:first-child {
+  color: #f05000;
+}
+#Sidebar > nav > ul > li.active ul {
+  display: block;
+  padding: 0;
+  background: #2c3133;
+}
+#Sidebar > nav > ul > li.active ul li a {
+  display: block;
+  padding: 10px 16px 10px 42px;
+  min-height: 40px;
+  background: #2c3133;
+  color: #9ca5a8;
+  text-decoration: none;
+  line-height: 20px;
+}
+#Sidebar > nav > ul > li.active ul li a:hover {
+  background-color: #212526;
+}
+#Sidebar > nav > ul > li.active ul li:last-child {
+  border-bottom: 20px solid #2c3133;
+}
+#Sidebar > nav > ul > li.active ul li.active {
+  background-color: #212526;
+}
+#Sidebar > nav > ul > li.active ul li.active > a {
+  color: #dde2e4;
+  background: #212526;
+}
+#Sidebar > nav > ul ol {
+  padding-left: 0;
+}
+#Sidebar > nav > ul ol li {
+  list-style-type: none;
+}
+#Sidebar > nav > ul ol li a {
+  display: block;
+  padding: 10px 0px 16px 40px;
+  color: #bdc5c8;
+  text-decoration: none;
+  font-weight: 400;
+  line-height: 20px;
+}
+#Sidebar > nav > ul ol li.active {
+  color: #dde2e4;
+  background: #212526;
+}
+.pushed-body #Sidebar #TopBar .burgermenu {
+  left: 240px;
+  -webkit-transition: left 0.3s ease;
+  transition: left 0.3s ease;
+}
+.pushed-body #Sidebar > nav {
+  position: fixed;
+  left: 0;
+  -webkit-transition: left 0.3s ease;
+  transition: left 0.3s ease;
 }
 .modal-header {
   padding: 60px 60px 40px 60px;
