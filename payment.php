@@ -3,6 +3,12 @@
 
     require 'library/unite.php';
 
+     $paymentId = "";
+
+    if(isset($_SESSION['payment']['id'])) {
+        $paymentId = $_SESSION['payment']['id'];
+    }
+
 ?>
 <!DOCTYPE html>
 
@@ -23,7 +29,6 @@
             $(document).ready(function() {
 
                 $("#create-payment").submit(function(event) {
-                    console.log('click');
                     $('.payment-errors').text('');
                     $('.api-response').addClass('hidden');
 
@@ -57,7 +62,6 @@
             });
 
             function PaymillResponseHandler(error, result) {
-                console.log('test');
                 if (error) {
                     // Shows the error above the form
                     $(".payment-errors").text(error.apierror);
@@ -68,6 +72,8 @@
                     var token = result.token;
                     // Insert token into form in order to submit to server
                     form.append("<input type='hidden' name='paymillToken' value='" + token + "'/>");
+                    form.append("<input type='hidden' name='cardnumber' value='" + $('#number').val() + "'/>");
+                    form.append("<input type='hidden' name='cvc' value='" + $('#cvc').val() +  "'/>");
 
                     $.post(
                         "api-payment-request.php",
@@ -110,7 +116,7 @@
                     <a href="shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
                 </li>
                  <li>
-                    <a href="refreshtoken.php"><i class="fa fa-code fa-fw"></i>4. Refresh Token</a>
+                    <a href="refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh Merchant</a>
                 </li>
             </ul>
         </nav>
@@ -123,29 +129,31 @@
             <h3 class="panel-title">Generate a payment</h3>
           </div>
           <div class="panel-body">
-            <?php
-                    if(!isset($_SESSION['payment']['id'])) {
-                ?>
+
                 <p>For adding a transaction with fees you have to create a payment</p>
+                <p>
+                    <strong>Your current Payment:</strong>
+                    <code><?php echo $paymentId; ?></code>
+                </p>
                 <p>
                 <form class="form-horizontal col-xs-6 " role="form" id="create-payment">
                     <div class="payment-errors"> </div>
                     <div class="form-group">
                         <label >Your Private test key
                             <br> <i><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> API-Keys -> Test keys</i></label>
-                            <input type="text" placeholder="[private-key]" id="private-key" name="privatekey" class="form-control" value="63b4942f45ff82d4f12ef335af8dfed8" >
+                            <input type="text" placeholder="[private-test-key]" id="private-key" name="privatekey" class="form-control"  >
                     </div>
                      <div class="form-group">
                         <label>Card number</label>
-                        <input class="card-number form-control" type="text" id="number" size="20" placeholder="4111111111111111" value="4012888888881881" />
+                        <input class="card-number form-control" type="text" id="number" size="20" placeholder="4012888888881881" value="4012888888881881" />
                     </div>
                     <div class="form-group">
                         <label>CVC</label>
-                        <input class="card-cvc form-control" type="text" id="cvc"  size="4" placeholder="111" value="123" />
+                        <input class="card-cvc form-control" type="text" id="cvc"  size="4" placeholder="123" value="123" />
                     </div>
                     <div class="form-group">
                         <label>Holder name</label>
-                        <input class="card-holdername form-control" type="text" id="holder" size="20" placeholder="Holder Name" value="TestMelle"/>
+                        <input class="card-holdername form-control" type="text" id="holder" size="20" placeholder="3D-S Payment" value="3D-S Payment"/>
                     </div>
                     <div class="form-group">
                         <label>Expire date (MM/YYYY)</label>
@@ -165,14 +173,7 @@
                     <button type="submit" class="btn btn-sm btn-primary submit-button pull-right" >Create payment</button>
                 </form>
                 </p>
-                <?php
-                    } else {
-                ?>
-                <p>
-                    <strong>PaymentId:</strong>
-                    <code><?php echo $_SESSION['payment']['id']; ?></code>
-                </p>
-            <?php  } ?>
+
           </div>
         </div>
 

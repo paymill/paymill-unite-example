@@ -2,9 +2,6 @@
     session_start();
     include 'library/unite.php';
 
-    //var_dump($_SESSION['payment']);exit;
-    //var_dump($_SESSION['accessMerchant']);exit;
-
     $disabled = "";
     $last4 = "";
     $cardholder = "";
@@ -19,18 +16,24 @@
     } else {
         $last4 =  $_SESSION['payment']['last4'];
         $cardholder = $_SESSION['payment']['card_holder'] ;
+        $expire_month = $_SESSION['payment']['expire_month'];
+        $expire_year = $_SESSION['payment']['expire_year'];
         $expiredate = $_SESSION['payment']['expire_month']. ' / ' . $_SESSION['payment']['expire_year'] ;
         $payment_id = $_SESSION['payment']['id'];
         $paymillToken =  $_SESSION['payment']['paymillToken'];
+        $number =  $_SESSION['payment']['number'];
+        $cvc =  $_SESSION['payment']['cvc'];
     }
 
-    $public_key =  $_SESSION['accessMerchant']['publicKey'];
-    //var_dump($paymillToken, $payment_id);exit;
+    $public_key =  "";
+    if(isset($_SESSION['accessMerchant']['publicKey'])) {
+        $public_key = $_SESSION['accessMerchant']['publicKey'];
+    }
+
 ?>
 <!DOCTYPE html>
 <html lang="en-gb">
     <head>
-        <script type="text/javascript" src="assets/js/jquery/jquery-1.10.1.min.js"></script>
         <script type="text/javascript" src="assets/js/jquery/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="assets/js/bootstrap/bootstrap.min.js"></script>
 
@@ -84,7 +87,16 @@
                     // Deactivate submit button to avoid further clicks
                     $('.submit-button').attr("disabled", "disabled");
 
-                    PaymillResponseHandlerFee();
+                    paymill.createToken({
+                        number: '<?php echo $number; ?>',  // required, ohne Leerzeichen und Bindestriche
+                        exp_month:'<?php echo $expire_month; ?>',   // required
+                        exp_year: '<?php echo $expire_year; ?>',     // required, vierstellig z.B. "2016"
+                        cvc: '<?php echo $cvc; ?>',                // required
+                        amount_int: $('.fee-amount').val(),      // required, integer, z.B. "15" für 0.15 Euro
+                        currency: $('.fee-currency').val(),  // required, ISO 4217 z.B. "EUR" od. "GBP"
+                        cardholdername: '<?php echo $number; ?>'// optional
+                    }, PaymillResponseHandlerFee);                   // Info dazu weiter unten
+
                     return false;
 
                 });
@@ -133,8 +145,12 @@
 
                     var formfee = $("#payment-form-fee");
                     // Insert token und payment_id into form in order to submit to server
-                    formfee.append("<input type='hidden' name='paymillToken' value='<?php echo $paymillToken; ?>'/>");
-                    formfee.append("<input type='hidden' name='payment_id' value='<?php echo $payment_id; ?>'/>");
+                    var token = result.token;
+                    var paymentId = '<?php echo $payment_id; ?>';
+
+                    // Insert token into form in order to submit to server
+                    formfee.append("<input type='hidden' name='paymillToken' value='" + token + "'/>");
+                    formfee.append("<input type='hidden' name='payment_id' value='" + paymentId + "'/>");
                     formfee.append("<input type='hidden' name='withFee' value='1'/>");
 
                     $.post(
@@ -180,7 +196,7 @@
                         <a href="shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
                     </li>
                      <li>
-                        <a href="refresh-token.php"><i class="fa fa-code fa-fw"></i>4. Refresh Token</a>
+                        <a href="refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh Merchant</a>
                     </li>
                 </ul>
             </nav>
@@ -270,7 +286,11 @@
 
                                     <div class="form-group">
                                         <label>Price (in Cent)</label>
-                                        <input readonly class="card-amount form-control" name="card-amount" type="text" value="250" size="20" />
+                                        <input class="card-amount form-control" name="camount" type="text" value="250" size="20" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Currency</label>
+                                        <input class="card-currency form-control" name="currency" type="text" placeholder="EUR" size="20" value="EUR" />
                                     </div>
                                     <?php if($public_key): ?>
                                     <button class="btn btn-sm btn-primary" type="submit" >Buy now</button>
@@ -282,7 +302,7 @@
                                    Used public key: <code><?php echo $public_key; ?></code><br>
                                    Live key: <code><strong><?php echo $is_live ? 'yes!!!' : 'no'; ?></strong></code>
                                <?php else: ?>
-                                   <h3>Do don't have access keys yet. Please first connect a merchant:</h3>
+                                   <h4 class="text-danger">Do don't have access keys yet. Please first connect a merchant:</h4>
                                    <a href="connect.php" class="btn btn-primary btn-sm">
                                       Connect page
                                    </a>
@@ -302,7 +322,7 @@
                                 <form role="form" id="payment-form-fee" >
                                     <div class="payment-errors"> </div>
 
-                                    <h4>Uses the Payment generated in Step 2 - Payment:</h4>
+                                    <h4>Use the Payment generated in Step 2 -> Payment:</h4><br>
                                     <p>
                                         <label>Card number (last 4)</label>: <?php echo $last4; ?>
                                     </p>
@@ -312,18 +332,21 @@
                                     <p>
                                         <label>Expire date (MM/YYYY)</label>: <?php echo $expiredate; ?>
                                     </p>
-
+                                    <div class="form-group">
+                                        <label>payment_id</label>
+                                         <input class="fee-payment- id form-control" type="text" readonly value="<?php echo $payment_id; ?>" />
+                                    </div>
                                     <div class="form-group">
                                         <label>Price (in Cent)</label>
-                                        <input  class="card-amount form-control" name="card-amount" type="text" placeholder="250" size="20" value="333" />
+                                        <input  class="fee-amount form-control" name="card-amount" type="text" placeholder="250" size="20" value="250" />
                                     </div>
                                     <div class="form-group">
                                         <label>Fee (in Cent)</label>
-                                        <input  class="card-fee form-control" name="card-fee" type="text" placeholder="50" size="20" value="33"/>
+                                        <input  class="fee form-control" name="card-fee" type="text" placeholder="50" size="20" value="75"/>
                                     </div>
                                     <div class="form-group">
                                         <label>Currency</label>
-                                        <input  class="card-currency form-control" name="card-currency" type="text" placeholder="EUR" size="20" value="EUR" />
+                                        <input  class="fee-currency form-control" name="card-currency" type="text" placeholder="EUR" size="20" value="EUR" />
                                     </div>
                                     <?php if($public_key): ?>
                                     <button class="btn btn-sm btn-primary" type="submit" <?php echo $disabled; ?>>Buy now</button>
@@ -335,12 +358,11 @@
                                    Used public key: <code><?php echo $public_key; ?></code><br>
                                    Live key: <code><strong><?php echo $is_live ? 'yes!!!' : 'no'; ?></strong></code>
                                <?php else: ?>
-                                   <h3>Do don't have access keys yet. Please first connect a merchant:</h3>
+                                    <h4 class="text-danger">Do don't have access keys yet. Please first connect a merchant:</h4>
                                    <a href="connect.php" class="btn btn-primary btn-sm">
                                       Connect page
                                    </a>
                                <?php endif; ?>
-                               <br>Used payment_id: <code><?php echo $payment_id; ?></code>
                            </div>
                         </div>
                     </div>

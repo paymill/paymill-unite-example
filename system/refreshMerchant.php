@@ -31,9 +31,9 @@
 
 
           $fields = array(
-              'grant_type'    =>  $_SESSION['userConfig']['grantType'] ,
+              'grant_type'    =>  "refresh_token",
               'scope'         =>  $_SESSION['userConfig']['scope'],
-              'code'          =>  $code,
+              'refresh_token'          =>  $_SESSION['accessMerchant']['refreshToken'],
               'client_id'     =>  $_SESSION['userConfig']['clientId'] ,
               'client_secret' =>  $_SESSION['userConfig']['clientSecret']
           );
@@ -144,19 +144,19 @@
                 <li >
                     <a href="../index.php" ><i class="fa fa-code fa-fw"></i>1. Configuration</a>
                 </li>
-                 <li  class="active">
+                 <li  >
                     <a href="#">
                         <i class="fa fa-code fa-fw "></i>2. Connect
                     </a>
                     <ol >
-                        <li class="active"><a href="">Connect to a Merchant</a></li>
+                        <li ><a href="../connect.php">Connect to a Merchant</a></li>
                         <li><a href="../payment.php">Payment</a></li>
                     </ol>
                 </li>
                  <li>
                     <a href="../shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
                 </li>
-                 <li>
+                 <li class="active">
                     <a href="../refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh Merchant</a>
                 </li>
             </ul>

@@ -3,20 +3,15 @@
 
     require 'library/unite.php';
 
-    //config-settings
-    //if(!isset($_SESSION['userConfig'])) {
-
-
-
          if(!isset($_SESSION['queryString'] )){
             $queryString = 'client_id=' . $client_id . '&scope=' . $scope
                 . '&response_type=code&redirect_uri=' . $redirect_uri;
             $_SESSION['queryString'] = $queryString;
+            $queryStringVal = $queryString;
             } else {
                 $queryString  = $_SESSION['queryString'];
+                $queryStringVal = $_SESSION['queryStringVal'];
             }
-
-
 
         if(isset($_POST['scope']) && isset( $_POST['redirectUri']) && isset($_POST['clientId'])) {
             $scope = $_POST['scope'];
@@ -25,7 +20,7 @@
                 if( $scopes === null) {
                     $scopes = $scopeVal;
                 } else {
-                    $scopes = $scopes.'+'.$scopeVal;
+                    $scopes = $scopes.' '.$scopeVal;
                 }
             }
             $scope = $scopes;
@@ -44,52 +39,41 @@
 
             }
 
-            $redirect_uri = $_SESSION['userConfig']['redirectUri'];
-            $redirect_uri = urlencode($redirect_uri);
+            if(isset($_SESSION['userConfig'])) {
 
-            $client_id =  $_SESSION['userConfig']['clientId'];
+                $redirect_uri = $_SESSION['userConfig']['redirectUri'];
+                $redirect_uri = urlencode($redirect_uri);
 
-            $scope = $_SESSION['userConfig']['scope'];
+                $client_id =  $_SESSION['userConfig']['clientId'];
 
-            $queryStringVal = 'client_id=' . $client_id . '&scope=' . $scope
-            . '&response_type=code&redirect_uri=' . $redirect_uri;
+                $scope = str_replace(' ', '+', $_SESSION['userConfig']['scope']);
 
-            $_SESSION['queryStringNoCheck'] = $queryStringVal;
-            if(isset($_SESSION['userConfig']['checksum']))
-            {
-                $queryStringVal = $_SESSION['queryStringVal'] . '&checksum=' . $_SESSION['userConfig']['checksum'];
-            }
-            $_SESSION['queryStringVal'] = $queryStringVal;
-        /*} else {
-            if(!isset($_SESSION['queryStringVal'] )){
-                $queryStringVal =  'client_id=&scope=&response_type=code&redirect_uri=';
+                $queryStringVal = 'client_id=' . $client_id . '&scope=' . $scope
+                . '&response_type=code&redirect_uri=' . $redirect_uri;
+
+                $_SESSION['queryStringNoCheck'] = $queryStringVal;
+                if(isset($_SESSION['userConfig']['checksum']))
+                {
+                    $schecksum =  $_SESSION['userConfig']['checksum'];
+                    $queryStringVal = $_SESSION['queryStringVal'] . '&checksum=' . $schecksum;
+                }
                 $_SESSION['queryStringVal'] = $queryStringVal;
             } else {
-                $queryStringVal = $_SESSION['queryStringVal'];
+                $schecksum = "";
             }
-        }*/
-
 
 
     //create checksum
     $checksum = null;
     if(isset($_POST['hash_token']))
     {
-        //if($hash = $_POST['hash_token']) {
             $checksum = hash_hmac('sha256', $_SESSION['queryStringNoCheck'], $_POST['hash_token']);
             $_SESSION['userConfig']['checksum'] = $checksum;
-        //}
-
-        //if($checksum) {
+            $_SESSION['userConfig']['hashToken'] = $_POST['hash_token'];
             $queryStringVal = $_SESSION['queryStringNoCheck'] . '&checksum=' . $_SESSION['userConfig']['checksum'];
             $_SESSION['queryStringVal'] = $queryStringVal;
             $_SESSION['userConfig']['checksum'] = $checksum;
-        //}
     }
-
-echo  $_SESSION['queryStringNoCheck']. '<br>';
-echo  $_SESSION['queryStringVal'];
-
 
 
 ?>
@@ -98,7 +82,6 @@ echo  $_SESSION['queryStringVal'];
 <html lang="en-gb">
 
 <head>
-    <script type="text/javascript" src="assets/js/jquery/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src="assets/js/jquery/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap/bootstrap.min.js"></script>
 
@@ -106,58 +89,6 @@ echo  $_SESSION['queryStringVal'];
 
     <script type="text/javascript" src="<?php echo $bridge_url; ?>"></script>
 
-    <script type="text/javascript">
-            var PAYMILL_PUBLIC_KEY = '<?php echo $public_key; ?>';
-
-            $(document).ready(function() {
-
-                $("#create-payment").submit(function(event) {
-
-                    $('.payment-errors').text('');
-                    $('.api-response').addClass('hidden');
-
-                    // Deactivate submit button to avoid further clicks
-                    $('submit-button').attr("disabled", "disabled");
-
-                    paymill.createToken({
-                        number: "5169147129584558",  // required, ohne Leerzeichen und Bindestriche
-                        exp_month: "12",   // required
-                        exp_year: "2016",     // required, vierstellig z.B. "2016"
-                        cvc: "123",                  // required
-                        amount_int: $('#fee-amount').val(),      // required, integer, z.B. "15" für 0.15 Euro
-                        currency: $('#currency').val(),  // required, ISO 4217 z.B. "EUR" od. "GBP"
-                        cardholder: "Test Payment" // optional
-                    }, PaymillResponseHandler);                   // Info dazu weiter unten
-                    return false;
-                });
-            });
-
-            function PaymillResponseHandler(error, result) {
-                if (error) {
-                    // Shows the error above the form
-                    $(".payment-errors").text(error.apierror);
-                    $(".submit-button").removeAttr("disabled");
-                } else {
-                    var form = $("#create-payment");
-                    // Output token
-                    var token = result.token;
-                    // Insert token into form in order to submit to server
-                    form.append("<input type='hidden' name='paymillToken' value='" + token + "'/>");
-
-                    $.post(
-                        "api-payment-request.php",
-                        $('#create-payment').serialize(),
-                        function(result) {
-                            //very simple frontend test if API response sets transaction to closed
-                            $('.api-response .panel-body').html('<span style="color: #009900">Transaction successfully done!</span><br><br><pre class="pre-scrollable">'+ result +'</pre>');
-                            $('#createPayment').modal('hide');
-                            $('.api-response').removeClass('hidden');
-                        },
-                        'text'
-                    );
-                }
-            }
-        </script>
 </head>
 
 <body>
@@ -185,7 +116,7 @@ echo  $_SESSION['queryStringVal'];
                     <a href="shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
                 </li>
                  <li>
-                    <a href="refreshtoken.php"><i class="fa fa-code fa-fw"></i>4. Refresh Token</a>
+                    <a href="refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh Merchant</a>
                 </li>
             </ul>
         </nav>
@@ -247,7 +178,7 @@ echo  $_SESSION['queryStringVal'];
                 </p>
                 <p>
                     <strong>Your current checksum:</strong>
-                    <code><?php echo $_SESSION['userConfig']['checksum']; ?></code>
+                    <code><?php echo $checksum; ?></code>
                 </p>
 
                 <p>
@@ -298,33 +229,6 @@ echo  $_SESSION['queryStringVal'];
         </div>
 
         </div>
-
-        <!-- Modal
-        <div class="modal fade" id="createPayment" tabindex="-1" role="dialog" aria-labelledby="payment" aria-hidden="true">
-            <form class="form-horizontal" role="form" id="create-payment">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h1 class="modal-title" id="myModalLabel">New payment</h1>
-                  </div>
-                  <div class="modal-body">
-                            <div class="payment-errors"> </div>
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label" for="private-key">Private key</label>
-                                <div class="col-sm-10">
-                                    <input type="text" placeholder="[private-key]" id="private-key" name="payment[privatekey]" class="form-control" value="63b4942f45ff82d4f12ef335af8dfed8 "></div>
-                            </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-link" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-sm btn-success submit-button" >Save payment</button>
-                  </div>
-                </div>
-              </div>
-            </form>
-
-        </div>-->
 
     </div>
 </body>

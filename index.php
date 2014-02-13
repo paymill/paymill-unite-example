@@ -17,10 +17,8 @@
 <html lang="en-gb">
     <head>
         <link rel="stylesheet" href="assets/css/screen.css">
-        <script type="text/javascript" src="assets/js/jquery/jquery-1.10.1.min.js"></script>
         <script type="text/javascript" src="assets/js/jquery/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="assets/js/bootstrap/bootstrap.min.js"></script>
-        <script type="text/javascript" src="assets/js/main-ck.js"></script>
     </head>
 
     <body>
@@ -47,7 +45,7 @@
                 <a href="shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
             </li>
              <li>
-                <a href="refreshtoken.php"><i class="fa fa-code fa-fw"></i>4. Refresh Token</a>
+                <a href="refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh Merchant</a>
             </li>
         </ul>
     </nav>
@@ -56,23 +54,6 @@
     <div id="Content">
         <form method="post" action="connect.php" class="configForm">
         <div class="container">
-<!--
-        <div class="row">
-            <div class="col-lg-7">
-                <div class="header">
-                    <h1><img src="assets/img/icon.png" style="height: 27px; margin-bottom: 6px;" /> PAYMILL Unite Demo</h1>
-                </div>
-            </div>
-            <div class="col-lg-5">
-                <ol class="breadcrumb">
-                  <li class="active">1. Config</li>
-                  <li><a href="connect.php">2. Connect</a></li>
-                  <li><a href="shopping-cart.php">3. Shopping Cart</a></li>
-                  <li><a href="refresh-token.php">4. Refresh Token</a></li>
-                </ol>
-            </div>
-        </div>
- -->
         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">Welcome to the PAYMILL Unite demo</h3>
@@ -104,13 +85,11 @@
                     </li>
                     <li>
                         Now if everything worked well, you can do a test transaction with our shopping cart <a href="shopping-cart.php">example</a>.<br>
-                        <i>If you want to do a transaction with a fee, you have to do a <a href="payment.php">payment</a> before.</i>
+                        <i>If you wish to execute a transaction with a fee, you have to do a <a href="payment.php">payment</a> before.</i>
                     </li>
                 </ol>
             </div>
         </div>
-
-
 
         <div class="panel panel-danger">
           <div class="panel-heading">
@@ -184,7 +163,8 @@
                     </tr>
                     <tr>
                         <td>Scope</td>
-                        <td><p>Permissions you are asking for.<p></td>
+                        <td><p>Permissions you are asking for. <br>
+                            <i>(Don't join a '_w', '_r' and '_rw' permissions of one object.)</i><p></td>
                         <td>
                             <div class="checkbox">
                                 <div class="col-xs-4">
@@ -192,28 +172,43 @@
                                     <label><input type="checkbox" name="scope[]" value="clients_w" <?php if(strpos($scopes, 'clients_w') !== false) { echo " checked"; } ?>>clients_w</label><br>
                                     <label><input type="checkbox" name="scope[]" value="payments_w" <?php if(strpos($scopes, 'payments_w') !== false) { echo " checked"; } ?>>payments_w</label><br>
                                     <label><input type="checkbox" name="scope[]" value="refunds_w" <?php if(strpos($scopes, 'refunds_w') !== false) { echo " checked"; } ?>>refunds_w</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="webhooks_w" <?php if(strpos($scopes, 'webhooks_w') !== false) { echo " checked"; } ?>>webhooks_w</label>
+                                    <label><input type="checkbox" name="scope[]" value="webhooks_w" <?php if(strpos($scopes, 'webhooks_w') !== false) { echo " checked"; } ?>>webhooks_w</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="frauds_w" <?php if(strpos($scopes, 'frauds_w') !== false) { echo " checked"; } ?>>frauds_w</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="subscriptions_w" <?php if(strpos($scopes, 'subscriptions_w') !== false) { echo " checked"; } ?>>subscriptions_w</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="payments_w" <?php if(strpos($scopes, 'payments_w') !== false) { echo " checked"; } ?>>payments_w</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="preauthorizations_w" <?php if(strpos($scopes, 'preauthorizations_w') !== false) { echo " checked"; } ?>>preauthorizations_w</label><br>
+
                                 </div>
                                 <div class="col-xs-4">
                                     <label><input type="checkbox" name="scope[]" value="transactions_r" <?php if(strpos($scopes, 'transactions_r') !== false) { echo " checked"; } ?> >transactions_r</label><br>
                                     <label><input type="checkbox" name="scope[]" value="clients_r" <?php if(strpos($scopes, 'clients_r') !== false) { echo " checked"; } ?>>clients_r</label><br>
                                     <label><input type="checkbox" name="scope[]" value="payments_r" <?php if(strpos($scopes, 'payments_r') !== false) { echo " checked"; } ?>>payments_r</label><br>
                                     <label><input type="checkbox" name="scope[]" value="refunds_r" <?php if(strpos($scopes, 'refunds_r') !== false) { echo " checked"; } ?>>refunds_r</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="webhooks_r" <?php if(strpos($scopes, 'webhooks_r') !== false) { echo " checked"; } ?>>webhooks_r</label>
+                                    <label><input type="checkbox" name="scope[]" value="webhooks_r" <?php if(strpos($scopes, 'webhooks_r') !== false) { echo " checked"; } ?>>webhooks_r</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="frauds_r" <?php if(strpos($scopes, 'frauds_r') !== false) { echo " checked"; } ?>>frauds_r</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="subscriptions_r" <?php if(strpos($scopes, 'subscriptions_r') !== false) { echo " checked"; } ?>>subscriptions_r</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="payments_r" <?php if(strpos($scopes, 'payments_r') !== false) { echo " checked"; } ?>>payments_r</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="preauthorizations_r" <?php if(strpos($scopes, 'preauthorizations_r') !== false) { echo " checked"; } ?>>preauthorizations_r</label><br>
+
                                 </div>
                                 <div class="col-xs-4">
                                     <label><input type="checkbox" name="scope[]" value="transactions_rw" <?php if(strpos($scopes, 'transactions_rw') !== false) { echo " checked"; } ?> >transactions_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="clients_rw" <?php if(strpos($scopes, 'clients_rw') !== false) { echo " checked"; } ?>>clients_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="payments_rw" <?php if(strpos($scopes, 'payments_rw') !== false) { echo " checked"; } ?>>payments_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="refunds_rw" <?php if(strpos($scopes, 'refunds_rw') !== false) { echo " checked"; } ?>>refunds_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="webhooks_rw" <?php if(strpos($scopes, 'webhooks_rw') !== false) { echo " checked"; } ?>>webhooks_rw</label>
+                                    <label><input type="checkbox" name="scope[]" value="webhooks_rw" <?php if(strpos($scopes, 'webhooks_rw') !== false) { echo " checked"; } ?>>webhooks_rw</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="frauds_r" <?php if(strpos($scopes, 'frauds_rw') !== false) { echo " checked"; } ?>>frauds_rw</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="subscriptions_rw" <?php if(strpos($scopes, 'subscriptions_rw') !== false) { echo " checked"; } ?>>subscriptions_rw</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="payments_rw" <?php if(strpos($scopes, 'payments_rw') !== false) { echo " checked"; } ?>>payments_rw</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="preauthorizations_rw" <?php if(strpos($scopes, 'preauthorizations_rw') !== false) { echo " checked"; } ?>>preauthorizations_rw</label><br>
+
                                 </div>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>Redirect URI</td>
-                        <td><p>Your script which handles the returning authorization data (e.g. access keys etc.).</p></td>
+                        <td><p>Your script which handles the returning authorization data <br><i>(e.g. access keys etc.)</i>.</p></td>
                         <td><input type="text" name="redirectUri"  value="<?php echo $redirect_uri; ?>" /> </td>
                     </tr>
                 </tbody>

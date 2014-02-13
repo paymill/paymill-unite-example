@@ -17,7 +17,7 @@ set_include_path(implode(PATH_SEPARATOR, array( realpath(realpath(dirname(__FILE
 // This must be the only value you send via the form:
 $token  = $_POST['paymillToken'];
 
-$apiPrivateKey = $_POST['payment']['privatekey'];
+$apiPrivateKey = $_POST['privatekey'];
 
 
 if ($token) {
@@ -31,7 +31,10 @@ if ($token) {
 	$payment = $paymentObject->create($params);
 	$_SESSION['payment'] = $payment;
 	$_SESSION['payment']['paymillToken'] = $token;
-
+	//Save for TRX
+	$_SESSION['payment']['number'] = $_POST['cardnumber'];
+	$_SESSION['payment']['cvc'] = $_POST['cvc'];
+	
     // The return of the "create" method is an array with transaction
     // attributes like "description", "status" etc.
 

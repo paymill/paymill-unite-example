@@ -60,8 +60,6 @@ if ($token) {
         $params['fee_amount'] = $fee;
     }
 
-    //var_dump($private_key,$amount, $currency,$token, $fee_payment, $fee);exit;
-
 
 	$transaction = $transactionsObject->create($params);
 
