@@ -31,54 +31,15 @@
             .transition(left .35s cubic-bezier(0.680, -0.550, 0.265, 1.550)); //@TODO check if possible
         }
 
-        /*#UserSettings {
-            display: inline-block;
-            .btn-group {
-                >span {
-                    display: block;
-                    height:60px;
-                    cursor: pointer;
-                    >span {
-                        display:block;
-                        float:left;
-                        overflow:hidden;
-                        padding: (60px-@lineHeight)/2 0;
-                        min-width: 300px;
-                        max-width: 300px;
-                        height:@lineHeight;
-                        height:60px;
-                        text-overflow:ellipsis;
-                        // different max-width per view
-                        @media(min-width:@screen-sm-min){ max-width: 590px; }
-                        @media(min-width:@screen-md-min){ max-width: 635px; }
-                        @media(min-width:@screen-lg-min){ max-width: 862px; }
-                    }
-                    >i {
-                        display:block;
-                        float:left;
-                        padding: (60px-@lineHeight)/2 0;
-                        height:60px;
-                    }
-                }
-                &.open > span {
-                    .box-shadow(none);
-                }
-                ul.dropdown-menu {
-                    width: 100%;
-                    .text-left;
-                    li.name {
-                        padding:8px 12px;
-                    }
-                }
-            }
-        }//#UserSettings*/
-
         #Branding {
             height:40px;
             padding: 0px 20px;
             float: left;
             color: @ci-orange;
             margin-left:  @sidebarWidth;
+            @media (min-width: @screen-xs-min) and (max-width: @screen-sm-max) {
+                margin-left: 20px;
+            }
         }//#Branding
 
     }//#TopBar

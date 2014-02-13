@@ -84,6 +84,7 @@
 <head>
     <script type="text/javascript" src="assets/js/jquery/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap/bootstrap.min.js"></script>
+    <script type="text/javascript" src="assets/js/main.js"></script>
 
     <link rel="stylesheet" href="assets/css/screen.css">
 
@@ -95,7 +96,7 @@
 
     <section id="Sidebar">
         <div id="TopBar">
-          <a href="#" id="PushSidebar" class="burgermenu"><i class="fa fa-bars"></i></a>
+          <a href="#" class="burgermenu PushSidebar"><i class="fa fa-bars"></i></a>
           <h1 id="Branding">PAYMILL Unite Demo</h1>
         </div>
         <nav>

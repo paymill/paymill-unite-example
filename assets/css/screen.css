@@ -11282,47 +11282,6 @@ i.status-chargeback:after {
   border-bottom: 1px solid #bdc5c8;
   background: #ffffff;
   text-align: right;
-  /*#UserSettings {
-            display: inline-block;
-            .btn-group {
-                >span {
-                    display: block;
-                    height:60px;
-                    cursor: pointer;
-                    >span {
-                        display:block;
-                        float:left;
-                        overflow:hidden;
-                        padding: (60px-@lineHeight)/2 0;
-                        min-width: 300px;
-                        max-width: 300px;
-                        height:@lineHeight;
-                        height:60px;
-                        text-overflow:ellipsis;
-                        // different max-width per view
-                        @media(min-width:@screen-sm-min){ max-width: 590px; }
-                        @media(min-width:@screen-md-min){ max-width: 635px; }
-                        @media(min-width:@screen-lg-min){ max-width: 862px; }
-                    }
-                    >i {
-                        display:block;
-                        float:left;
-                        padding: (60px-@lineHeight)/2 0;
-                        height:60px;
-                    }
-                }
-                &.open > span {
-                    .box-shadow(none);
-                }
-                ul.dropdown-menu {
-                    width: 100%;
-                    .text-left;
-                    li.name {
-                        padding:8px 12px;
-                    }
-                }
-            }
-        }//#UserSettings*/
 }
 #Sidebar #TopBar .burgermenu {
   position: relative;
@@ -11363,6 +11322,11 @@ i.status-chargeback:after {
   float: left;
   color: #f05000;
   margin-left: 240px;
+}
+@media (min-width: 480px) and (max-width: 991px) {
+  #Sidebar #TopBar #Branding {
+    margin-left: 20px;
+  }
 }
 #Sidebar > nav {
   position: fixed;
@@ -11550,41 +11514,6 @@ i.status-chargeback:after {
   margin: 0;
   float: right !important;
   float: right;
-}
-.pace {
-  pointer-events: none;
-  -webkit-pointer-events: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-}
-.pace .pace-progress {
-  position: fixed;
-  top: 59px;
-  left: 0;
-  z-index: 1000;
-  height: 5px;
-  background: #f05000;
-  -webkit-transition: left 0.3s ease;
-  transition: left 0.3s ease;
-  -webkit-transition: width 0.5s ease;
-  transition: width 0.5s ease;
-}
-@media (min-width: 992px) {
-  .pace .pace-progress {
-    left: 240px;
-  }
-}
-.pace-activity {
-  display: none;
-}
-.pace-done .pace {
-  display: none;
-}
-.pushed-body .pace .pace-progress {
-  left: 240px;
-  -webkit-transition: left 0.3s ease;
-  transition: left 0.3s ease;
 }
 .configForm input[type="text"] {
   width: 480px;

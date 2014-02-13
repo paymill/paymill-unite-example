@@ -34,7 +34,7 @@ if ($token) {
 	//Save for TRX
 	$_SESSION['payment']['number'] = $_POST['cardnumber'];
 	$_SESSION['payment']['cvc'] = $_POST['cvc'];
-	
+
     // The return of the "create" method is an array with transaction
     // attributes like "description", "status" etc.
 
