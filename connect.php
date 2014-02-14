@@ -128,17 +128,6 @@
 
     <div id="Content">
     <div class="container">
-<!--         <div class="panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title">Short description</h3>
-          </div>
-          <div class="panel-body">
-                <p>The link behind the button is based on the settings in <code>library/unite.php</code> and looks like this:</p>
-                <pre></pre>
-               
-          </div>
-        </div> -->
-
         <div class="panel panel-danger">
           <div class="panel-heading">
             <h3 class="panel-title">PAYMILL Unite connect button</h3>

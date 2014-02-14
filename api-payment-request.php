@@ -20,6 +20,7 @@ $token  = $_POST['paymillToken'];
 $apiPrivateKey = $_POST['privatekey'];
 
 
+
 if ($token) {
 	require "Services/Paymill/Payments.php";
 
@@ -34,6 +35,7 @@ if ($token) {
 	//Save for TRX
 	$_SESSION['payment']['number'] = $_POST['cardnumber'];
 	$_SESSION['payment']['cvc'] = $_POST['cvc'];
+	$_SESSION['publicKey'] = $_POST['publickey'];
 
     // The return of the "create" method is an array with transaction
     // attributes like "description", "status" etc.

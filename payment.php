@@ -24,8 +24,8 @@
     <script type="text/javascript" src="<?php echo $bridge_url; ?>"></script>
 
     <script type="text/javascript">
-            var PAYMILL_PUBLIC_KEY = '<?php echo $public_key; ?>';
 
+            var PAYMILL_PUBLIC_KEY = "";
             $(document).ready(function() {
 
                 $("#create-payment").submit(function(event) {
@@ -44,6 +44,8 @@
                         $(".payment-errors").html("<span style='color: #ff0000'>Invalid CVC</span>");
                         return false;
                     }
+                    PAYMILL_PUBLIC_KEY =  $('#public-key').val();
+                    console.log(PAYMILL_PUBLIC_KEY);
 
                     // Deactivate submit button to avoid further clicks
                     $('submit-button').attr("disabled", "disabled");
@@ -81,8 +83,8 @@
                         function(result) {
                             //very simple frontend test if API response sets transaction to closed
                             $('.api-response .panel-body').html('<span style="color: #009900">Transaction successfully done!</span><br><br><pre class="pre-scrollable">'+ result +'</pre>');
-                            $('#createPayment').modal('hide');
                             $('.api-response').removeClass('hidden');
+                            $('#payment-id').val('<?php echo $paymentId; ?>');
                         },
                         'text'
                     );
@@ -133,7 +135,7 @@
                 <p>For adding a transaction with fees you have to create a payment</p>
                 <p>
                     <strong>Your current Payment:</strong>
-                    <code><?php echo $paymentId; ?></code>
+                    <code id="payment-id"><?php echo $paymentId; ?></code>
                 </p>
                 <p>
                 <form class="form-horizontal col-xs-6 " role="form" id="create-payment">
@@ -142,6 +144,11 @@
                         <label >Your Private test key
                             <br> <i><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> API-Keys -> Test keys</i></label>
                             <input type="text" placeholder="[private-test-key]" id="private-key" name="privatekey" class="form-control"  >
+                    </div>
+                    <div class="form-group">
+                        <label >Your Public test key
+                            <br> <i><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> API-Keys -> Test keys</i></label>
+                            <input type="text" placeholder="[public-test-key]" id="public-key" name="public" class="form-control"  >
                     </div>
                      <div class="form-group">
                         <label>Card number</label>
