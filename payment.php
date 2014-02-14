@@ -3,7 +3,7 @@
 
     require 'library/unite.php';
 
-     $paymentId = "";
+     $paymentId = "[your-current-payment]";
 
     if(isset($_SESSION['payment']['id'])) {
         $paymentId = $_SESSION['payment']['id'];

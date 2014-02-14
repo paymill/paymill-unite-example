@@ -3,14 +3,16 @@
 
     require 'library/unite.php';
 
-         if(!isset($_SESSION['queryString'] )){
+         if(!isset($_SESSION['queryString'])){
             $queryString = 'client_id=' . $client_id . '&scope=' . $scope
                 . '&response_type=code&redirect_uri=' . $redirect_uri;
             $_SESSION['queryString'] = $queryString;
+            $_SESSION['queryStringVal'] = $queryString;
             $queryStringVal = $queryString;
             } else {
                 $queryString  = $_SESSION['queryString'];
                 $queryStringVal = $_SESSION['queryStringVal'];
+
             }
 
         if(isset($_POST['scope']) && isset( $_POST['redirectUri']) && isset($_POST['clientId'])) {
@@ -60,6 +62,7 @@
                 $_SESSION['queryStringVal'] = $queryStringVal;
             } else {
                 $schecksum = "";
+                $queryStringVal = $queryString;
             }
 
 
@@ -125,25 +128,23 @@
 
     <div id="Content">
     <div class="container">
-        <div class="panel panel-default">
+<!--         <div class="panel panel-default">
           <div class="panel-heading">
             <h3 class="panel-title">Short description</h3>
           </div>
           <div class="panel-body">
                 <p>The link behind the button is based on the settings in <code>library/unite.php</code> and looks like this:</p>
-                <pre><?php echo $paymill_root . '/?' . $queryString ; ?></pre>
-                <p>It sends the merchant to the PAYMILL Connect page
-                    where the merchant can login or register to authorize your connect request.</p>
-                <p><a href="https://paymill.com/en-gb/unite-documentation/">Read more about how to build the connect URL.</a></p>
-                <p>If you want to create a transaction with a fee, you have to add a payment first. Go to step <a href="payment.php">Payment</a>.</p>
+                <pre></pre>
+               
           </div>
-        </div>
+        </div> -->
 
         <div class="panel panel-danger">
           <div class="panel-heading">
             <h3 class="panel-title">PAYMILL Unite connect button</h3>
           </div>
           <div class="panel-body">
+
                 <p>Include a button like this into your connect page.</p>
                 <p>
                 <a href="<?php echo $paymill_root . '/?' . $queryStringVal ; ?>" class="btn btn-primary">
@@ -153,6 +154,10 @@
                 <p>The generated link is based on your settings in <a href="connect.php">Step1 - Config</a>:</p>
                 <pre><?php echo $queryStringVal; ?></pre>
                 <p><br>*Click the button to test the behavior with your settings*</p>
+                 <p>It sends the merchant to the PAYMILL Connect page
+                    where the merchant can login or register to authorize your connect request.</p>
+                <p><a href="https://paymill.com/en-gb/unite-documentation/">Read more about how to build the connect URL.</a></p>
+                <p>If you want to create a transaction with a fee, you have to add a payment first. Go to step <a href="payment.php">Payment</a>.</p>
           </div>
           <ul class="list-group">
             <li class="list-group-item">
@@ -179,7 +184,7 @@
                 </p>
                 <p>
                     <strong>Your current checksum:</strong>
-                    <code><?php echo $checksum; ?></code>
+                    <code><?php echo ($checksum? $checksum : "[your-checksum-generated-below]"); ?></code>
                 </p>
 
                 <p>

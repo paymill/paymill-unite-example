@@ -323,7 +323,7 @@
                                 <form role="form" id="payment-form-fee" >
                                     <div class="payment-errors"> </div>
 
-                                    <h4>Use the Payment generated in Step 2 -> Payment:</h4><br>
+                                    <h4>Use the Payment generated in Step 2 -> <a href="payment.php">Payment</a>:</h4><br>
                                     <p>
                                         <label>Card number (last 4)</label>: <?php echo $last4; ?>
                                     </p>

@@ -112,7 +112,7 @@
             </div>
             <p>There's a basic configuration file where you can set up your
                 connection data for the OAuth <a href="connect.php">connect</a>:</p>
-            <table class="table table-striped table-bordered">
+            <table class="table table-striped table-bordered" id="permissions">
                 <thead>
                     <tr>
                         <th>Setting</th>
@@ -167,7 +167,7 @@
                     <tr>
                         <td>Scope</td>
                         <td><p>Permissions you are asking for. <br>
-                            <i>(Don't join a '_w', '_r' and '_rw' permissions of one object.)</i><p></td>
+                            <i>(Don't join '_w', '_r' and '_rw' permissions of one object.)</i><p></td>
                         <td>
                             <div class="checkbox">
                                 <div class="col-xs-4">
@@ -178,7 +178,7 @@
                                     <label><input type="checkbox" name="scope[]" value="webhooks_w" <?php if(strpos($scopes, 'webhooks_w') !== false) { echo " checked"; } ?>>webhooks_w</label><br>
                                     <label><input type="checkbox" name="scope[]" value="frauds_w" <?php if(strpos($scopes, 'frauds_w') !== false) { echo " checked"; } ?>>frauds_w</label><br>
                                     <label><input type="checkbox" name="scope[]" value="subscriptions_w" <?php if(strpos($scopes, 'subscriptions_w') !== false) { echo " checked"; } ?>>subscriptions_w</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="payments_w" <?php if(strpos($scopes, 'payments_w') !== false) { echo " checked"; } ?>>payments_w</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="offers_w" <?php if(strpos($scopes, 'offers_w') !== false) { echo " checked"; } ?>>offers_w</label><br>
                                     <label><input type="checkbox" name="scope[]" value="preauthorizations_w" <?php if(strpos($scopes, 'preauthorizations_w') !== false) { echo " checked"; } ?>>preauthorizations_w</label><br>
 
                                 </div>
@@ -190,7 +190,7 @@
                                     <label><input type="checkbox" name="scope[]" value="webhooks_r" <?php if(strpos($scopes, 'webhooks_r') !== false) { echo " checked"; } ?>>webhooks_r</label><br>
                                     <label><input type="checkbox" name="scope[]" value="frauds_r" <?php if(strpos($scopes, 'frauds_r') !== false) { echo " checked"; } ?>>frauds_r</label><br>
                                     <label><input type="checkbox" name="scope[]" value="subscriptions_r" <?php if(strpos($scopes, 'subscriptions_r') !== false) { echo " checked"; } ?>>subscriptions_r</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="payments_r" <?php if(strpos($scopes, 'payments_r') !== false) { echo " checked"; } ?>>payments_r</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="offers_r" <?php if(strpos($scopes, 'offers_r') !== false) { echo " checked"; } ?>>offers_r</label><br>
                                     <label><input type="checkbox" name="scope[]" value="preauthorizations_r" <?php if(strpos($scopes, 'preauthorizations_r') !== false) { echo " checked"; } ?>>preauthorizations_r</label><br>
 
                                 </div>
@@ -202,7 +202,7 @@
                                     <label><input type="checkbox" name="scope[]" value="webhooks_rw" <?php if(strpos($scopes, 'webhooks_rw') !== false) { echo " checked"; } ?>>webhooks_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="frauds_r" <?php if(strpos($scopes, 'frauds_rw') !== false) { echo " checked"; } ?>>frauds_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="subscriptions_rw" <?php if(strpos($scopes, 'subscriptions_rw') !== false) { echo " checked"; } ?>>subscriptions_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="payments_rw" <?php if(strpos($scopes, 'payments_rw') !== false) { echo " checked"; } ?>>payments_rw</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="offers_rw" <?php if(strpos($scopes, 'offers_rw') !== false) { echo " checked"; } ?>>offers_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="preauthorizations_rw" <?php if(strpos($scopes, 'preauthorizations_rw') !== false) { echo " checked"; } ?>>preauthorizations_rw</label><br>
 
                                 </div>

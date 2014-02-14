@@ -11527,3 +11527,9 @@ i.status-chargeback:after {
   padding-top: 20px;
   text-align: center;
 }
+#permissions .checkbox {
+  padding-left: 10px;
+}
+#permissions .checkbox label {
+  font-size: 12px;
+}
