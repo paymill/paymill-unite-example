@@ -11521,10 +11521,12 @@ i.status-chargeback:after {
 .configForm input[readonly] {
   background-color: #dde2e4;
 }
-#permissions .checkbox {
+#permissions .checkbox,
+#refreshToken .checkbox {
   padding-left: 10px;
 }
-#permissions .checkbox label {
+#permissions .checkbox label,
+#refreshToken .checkbox label {
   font-size: 12px;
 }
 #create-payment .form-group {

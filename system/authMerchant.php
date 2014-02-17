@@ -115,7 +115,8 @@
                                                   'merchantId' =>  $result['merchant_id'],
                                                   'tokenType' => $result['token_type'],
                                                   'expires_in' => $result['expires_in'],
-                                                  'payment_methods' => $result['payment_methods']
+                                                  'payment_methods' => $result['payment_methods'],
+                                                  'code' => $code
                                                   );
           }
       }

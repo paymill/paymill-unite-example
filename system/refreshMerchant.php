@@ -3,40 +3,39 @@
 
     include '../library/unite.php';
 
-    $success = false;
-    $code    = false;
-
-    if($_GET['code']) {
-        $success = true;
-        $code = $_GET['code'];
-        $error = false;
-        $msg = 'Authorization was successful!';
-    }
-    else {
-        $error = $_GET['error'];
-        $msg = str_replace('+', ' ', $_GET['error_description']);
-    }
-
+    $success = true;
+    $code = $_SESSION['accessMerchant']['code'];
+    $msg = "";
 
       if ($code) {
           $url = $paymill_root . '/token';
           $fields_string = '';
-          /*$fields = array(
-              'grant_type'    => $grant_type,
-              'scope'         => 'transactions_w clients_w payments_w refunds_w webhooks_w',
-              'code'          => $code,
-              'client_id'     => $client_id,
-              'client_secret' => $client_secret
-          );*/
+
+
+          //there is a bug for updating scope
+          //scope in Session
+         /* $scope = $_POST['scope'];
+          $scopes = null;
+            foreach ($scope as $scopeVal) {
+                if( $scopes === null) {
+                    $scopes = $scopeVal;
+                } else {
+                    $scopes = $scopes.' '.$scopeVal;
+                }
+            }
+          $scope = $scopes;
+          $_SESSION['userConfig']['scope'] = $scope;*/
 
 
           $fields = array(
               'grant_type'    =>  "refresh_token",
+              //über Post holen
               'scope'         =>  $_SESSION['userConfig']['scope'],
-              'refresh_token'          =>  $_SESSION['accessMerchant']['refreshToken'],
+              'refresh_token' =>  $_SESSION['accessMerchant']['refreshToken'],
               'client_id'     =>  $_SESSION['userConfig']['clientId'] ,
               'client_secret' =>  $_SESSION['userConfig']['clientSecret']
           );
+
 
           foreach($fields as $key=>$value) {
               $fields_string .= $key.'='.$value.'&';
@@ -65,14 +64,6 @@
               //var_dump($info);
               curl_close($ch);
 
-              // Deprecated since 2013-12-17:
-
-              //$list = array(
-              //    array($result['access_token'], $result['refresh_token'], $result['public_key'], $result['merchant_id'])
-              //);
-
-              // Get connect information from authorization code result
-
               $scope      = explode(' ', $result['scope']);
               $accessKeys = $result['access_keys'];
 
@@ -95,31 +86,20 @@
                   )
               );
 
-              /*
-              //CHANGE
-              $csv = 'merchant.csv';
-              $fp = fopen($csv, 'w');
-              foreach ($list as $row) {
-                  fputcsv($fp, $row);
-              }
-              fclose($fp);*/
-
               $liveTRX = $canDoLiveTransactions ? '1' : '0';
 
               //SAVE in SESSION
-              $_SESSION['accessMerchant'] = array(
-                                                  'canDoLiveTransactions' => $liveTRX,
-                                                  'privateKey' => $key['private_key'],
-                                                  'refreshToken' => $result['refresh_token'],
-                                                  'publicKey' => $key['public_key'],
-                                                  'merchantId' =>  $result['merchant_id'],
-                                                  'tokenType' => $result['token_type'],
-                                                  'expires_in' => $result['expires_in'],
-                                                  'payment_methods' => $result['payment_methods']
-                                                  );
+              $_SESSION['accessMerchant']['canDoLiveTransactions']  = $liveTRX;
+              $_SESSION['accessMerchant']['privateKey'] = $key['private_key'];
+              $_SESSION['accessMerchant']['refreshToken'] = $result['refresh_token'];
+              $_SESSION['accessMerchant']['publicKey'] = $key['public_key'];
+              $_SESSION['accessMerchant']['merchantId'] =  $result['merchant_id'];
+              $_SESSION['accessMerchant']['tokenType'] = $result['token_type'];
+              $_SESSION['accessMerchant']['expires_in'] = $result['expires_in'];
+              $_SESSION['accessMerchant']['payment_methods'] = $result['payment_methods'];
+
           }
       }
-
 
 ?>
 <!DOCTYPE html>
@@ -168,7 +148,7 @@
 
           <?php if($success): ?>
 
-          <h2>Authorization was successful!</h2>
+          <h2>Refresh was successful!</h2>
 
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -302,9 +282,9 @@
 
 
           <p><br>
-            <a href="../connect.php" class="btn btn-success btn-sm pull-left">
+            <a href="../refresh-merchant.php" class="btn btn-success btn-sm pull-left">
               <span class="glyphicon glyphicon-chevron-left"></span>
-              Back to connect page
+              Back to refresh page
             </a>
             <a href="../shopping-cart.php" class="btn btn-success btn-sm pull-right">
               Do a test transaction
