@@ -37,6 +37,7 @@
         <script type="text/javascript" src="assets/js/jquery/jquery-1.10.2.min.js"></script>
         <script type="text/javascript" src="assets/js/bootstrap/bootstrap.min.js"></script>
         <script type="text/javascript" src="assets/js/main.js"></script>
+        <link rel='shortcut icon' href="favicon.ico" type="image/ico" />
 
         <script type="text/javascript" src="<?php echo $bridge_url; ?>"></script>
         <link rel="stylesheet" href="assets/css/screen.css">
@@ -207,6 +208,18 @@
             <div class="container">
                 <div class="panel panel-default">
                   <div class="panel-heading">
+                    <h3 class="panel-title">Fee Payment</h3>
+                  </div>
+                  <div class="panel-body">
+                        <p>If you as app provider want to add a fee for the transaction you did in the name of your merchant you can add
+                            a  <code>fee_amount</code> and <code>fee_payment</code> to the transaction request. Note: The fee will be subtracted from the total
+                            price and charged from the <code>fee_payment</code>.<br> 
+                            How to create a <code>fee_payment</code> is explained in step 2 -> <a href="payment">Payment</a>.
+                        </p>
+                  </div>
+                </div>
+                <div class="panel panel-default">
+                  <div class="panel-heading">
                     <h3 class="panel-title">Demo shopping cart</h3>
                   </div>
                   <div class="panel-body">
@@ -255,7 +268,7 @@
 
                 <div class="row">
                     <div class="col-xs-6">
-                        <div class="panel panel-default ">
+                        <div class="panel panel-danger ">
                           <div class="panel-heading">
                             <h3 class="panel-title">Demo payment form - without fee</h3>
 
@@ -314,7 +327,7 @@
 
 
                     <div class="col-xs-6">
-                        <div class="panel panel-default ">
+                        <div class="panel panel-danger ">
                           <div class="panel-heading">
                             <h3 class="panel-title">Demo payment form - with fee</h3>
 

@@ -88,6 +88,7 @@
     <script type="text/javascript" src="assets/js/jquery/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="assets/js/bootstrap/bootstrap.min.js"></script>
     <script type="text/javascript" src="assets/js/main.js"></script>
+    <link rel='shortcut icon' href="favicon.ico" type="image/ico" />
 
     <link rel="stylesheet" href="assets/css/screen.css">
 
