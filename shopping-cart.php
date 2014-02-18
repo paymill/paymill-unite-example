@@ -10,6 +10,7 @@
     $expiredate =  "";
     $payment_id =  "";
     $paymillToken = "";
+    $is_live = false;
 
 
     if(!isset($_SESSION['payment']))
@@ -25,6 +26,9 @@
         $paymillToken =  $_SESSION['payment']['paymillToken'];
         $number =  $_SESSION['payment']['number'];
         $cvc =  $_SESSION['payment']['cvc'];
+        if($_SESSION['accessMerchant']['canDoLiveTransactions'] === 1) {
+            $is_live = true;
+        }
     }
 
     $public_key =  "";
@@ -91,15 +95,6 @@
                     // Deactivate submit button to avoid further clicks
                     $('.submit-button').attr("disabled", "disabled");
 
-                   /* paymill.createToken({
-                        number: '<?php echo $number; ?>',  // required, ohne Leerzeichen und Bindestriche
-                        exp_month:'<?php echo $expire_month; ?>',   // required
-                        exp_year: '<?php echo $expire_year; ?>',     // required, vierstellig z.B. "2016"
-                        cvc: '<?php echo $cvc; ?>',                // required
-                        amount_int: $('.fee-amount').val(),      // required, integer, z.B. "15" für 0.15 Euro
-                        currency: $('.fee-currency').val(),  // required, ISO 4217 z.B. "EUR" od. "GBP"
-                        cardholdername: '<?php echo $number; ?>'// optional
-                    }, PaymillResponseHandlerFee);       */            // Info dazu weiter unten
                     PaymillResponseHandlerFee;
                     return false;
 
