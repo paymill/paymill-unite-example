@@ -33,7 +33,7 @@ if($_POST['withFee'] === '0' ) {
 	$fee_payment = $_POST['payment_id'];
 }
 
-$private_key = $_SESSION['accessMerchant']['privateKey'];
+$private_key = $_SESSION['accessMerchant']['privateTestKey'];
 
 
 // The connected merchant need to be a client of your app with a valid

@@ -2,15 +2,14 @@
     session_start();
     include 'library/unite.php';
 
-    //var_dump($_SESSION['accessMerchant']);exit;
-
     $disabled = "";
     $last4 = "";
     $cardholder = "";
     $expiredate =  "";
     $payment_id =  "";
     $paymillToken = "";
-    $is_live = false;
+    $public_live_key = "no";
+    $public_test_key =  "";
 
 
     if(!isset($_SESSION['payment']))
@@ -26,17 +25,18 @@
         $paymillToken =  $_SESSION['payment']['paymillToken'];
         $number =  $_SESSION['payment']['number'];
         $cvc =  $_SESSION['payment']['cvc'];
-        if($_SESSION['accessMerchant']['canDoLiveTransactions'] === 1) {
-            $is_live = true;
-        }
+    }
+    if($_SESSION['accessMerchant']['canDoLiveTransactions'] === "1") {
+        $public_live_key = $_SESSION['accessMerchant']['publicLiveKey'];
     }
 
-    $public_key =  "";
-    if(isset($_SESSION['accessMerchant']['publicKey'])) {
-        $public_key = $_SESSION['accessMerchant']['publicKey'];
+    if(isset($_SESSION['accessMerchant']['publicTestKey'])) {
+        $public_test_key = $_SESSION['accessMerchant']['publicTestKey'];
     }
 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en-gb">
     <head>
@@ -210,7 +210,7 @@
                   <div class="panel-body">
                         <p>If you as app provider want to add a fee for the transaction you did in the name of your merchant you can add
                             a  <code>fee_amount</code> and <code>fee_payment</code> to the transaction request. Note: The fee will be subtracted from the total
-                            price and charged from the <code>fee_payment</code>.<br> 
+                            price and charged from the <code>fee_payment</code>.<br>
                             How to create a <code>fee_payment</code> is explained in step 2 -> <a href="payment">Payment</a>.
                         </p>
                   </div>
@@ -310,8 +310,8 @@
                            </div>
                            <div class="panel-footer">
                                <?php if($public_key): ?>
-                                   Used public key: <code><?php echo $public_key; ?></code><br>
-                                   Live key: <code><strong><?php echo $is_live ? 'yes!!!' : 'no'; ?></strong></code>
+                                   Used public test key: <code><?php echo $public_test_key; ?></code><br>
+                                   Live key: <code><?php echo $public_live_key; ?></code>
                                <?php else: ?>
                                    <h4 class="text-danger">Do don't have access keys yet. Please first connect a merchant:</h4>
                                    <a href="connect.php" class="btn btn-primary btn-sm">
@@ -366,8 +366,8 @@
                            </div>
                            <div class="panel-footer">
                                <?php if($public_key): ?>
-                                   Used public key: <code><?php echo $public_key; ?></code><br>
-                                   Live key: <code><strong><?php echo $is_live ? 'yes!!!' : 'no'; ?></strong></code>
+                                   Used public test key: <code><?php echo $public_test_key; ?></code><br>
+                                   Live key: <code><?php echo $public_live_key; ?></code>
                                <?php else: ?>
                                     <h4 class="text-danger">Do don't have access keys yet. Please first connect a merchant:</h4>
                                    <a href="connect.php" class="btn btn-primary btn-sm">

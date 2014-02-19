@@ -73,6 +73,10 @@
                   $key = $accessKeys['live'];
                   $canDoLiveTransactions = true;
               } else {
+                  $accessKeys['live'] = array(
+                                              'private_key' => null,
+                                              'public_key' => null
+                                               );
                   $key = $accessKeys['test'];
                   $canDoLiveTransactions = false;
               }
@@ -90,9 +94,11 @@
 
               //SAVE in SESSION
               $_SESSION['accessMerchant']['canDoLiveTransactions']  = $liveTRX;
-              $_SESSION['accessMerchant']['privateKey'] = $key['private_key'];
+              $_SESSION['accessMerchant']['privateTestKey'] = $accessKeys['test']['private_key'];
+              $_SESSION['accessMerchant']['publicTestKey'] = $accessKeys['test']['public_key'];
+              $_SESSION['accessMerchant']['privateLiveKey'] = $accessKeys['live']['private_key'];
+              $_SESSION['accessMerchant']['publicLiveKey'] = $accessKeys['live']['public_key'];
               $_SESSION['accessMerchant']['refreshToken'] = $result['refresh_token'];
-              $_SESSION['accessMerchant']['publicKey'] = $key['public_key'];
               $_SESSION['accessMerchant']['merchantId'] =  $result['merchant_id'];
               $_SESSION['accessMerchant']['tokenType'] = $result['token_type'];
               $_SESSION['accessMerchant']['expires_in'] = $result['expires_in'];
