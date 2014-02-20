@@ -187,15 +187,15 @@
                      <li>
                         <a href="#"><i class="fa fa-code fa-fw "></i>2. Connect</a>
                         <ol class="">
-                            <li><a href="connect.php">Connect to a Merchant</a></li>
-                            <li><a href="payment.php">Payment</a></li>
+                            <li><a href="connect.php">Connect a Merchant</a></li>
+                            <li><a href="payment.php">Fee payment</a></li>
                         </ol>
                     </li>
                      <li class="active">
                         <a href="shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
                     </li>
                      <li>
-                        <a href="refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh Merchant</a>
+                        <a href="refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh token</a>
                     </li>
                 </ul>
             </nav>
@@ -205,13 +205,13 @@
             <div class="container">
                 <div class="panel panel-default">
                   <div class="panel-heading">
-                    <h3 class="panel-title">Fee Payment</h3>
+                    <h3 class="panel-title">Fee payment</h3>
                   </div>
                   <div class="panel-body">
                         <p>If you as app provider want to add a fee for the transaction you did in the name of your merchant you can add
                             a  <code>fee_amount</code> and <code>fee_payment</code> to the transaction request. Note: The fee will be subtracted from the total
                             price and charged from the <code>fee_payment</code>.<br>
-                            How to create a <code>fee_payment</code> is explained in step 2 -> <a href="payment">Payment</a>.
+                            How to create a <code>fee_payment</code> is explained in step 2 -> <a href="payment">Fee payment</a>.
                         </p>
                   </div>
                 </div>
@@ -333,7 +333,7 @@
                                 <form role="form" id="payment-form-fee" >
                                     <div class="payment-errors"> </div>
 
-                                    <h4>Use the Payment generated in Step 2 -> <a href="payment.php">Payment</a>:</h4><br>
+                                    <h4>Use the Payment generated in step 2 -> <a href="payment.php">Fee payment</a>:</h4><br>
                                     <p>
                                         <label>Card number (last 4)</label>: <?php echo $last4; ?>
                                     </p>
@@ -344,7 +344,7 @@
                                         <label>Expire date (MM/YYYY)</label>: <?php echo $expiredate; ?>
                                     </p>
                                     <div class="form-group">
-                                        <label>payment_id</label>
+                                        <label>Fee payment ID</label>
                                          <input class="fee-payment- id form-control" type="text" readonly value="<?php echo $payment_id; ?>" />
                                     </div>
                                     <div class="form-group">

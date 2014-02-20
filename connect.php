@@ -113,15 +113,15 @@
                         <i class="fa fa-code fa-fw "></i>2. Connect
                     </a>
                     <ol >
-                        <li class="active"><a href="">Connect to a Merchant</a></li>
-                        <li><a href="payment.php">Payment</a></li>
+                        <li class="active"><a href="">Connect a Merchant</a></li>
+                        <li><a href="payment.php">Fee payment</a></li>
                     </ol>
                 </li>
                  <li>
                     <a href="shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
                 </li>
                  <li>
-                    <a href="refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh Merchant</a>
+                    <a href="refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh token</a>
                 </li>
             </ul>
         </nav>
@@ -147,7 +147,7 @@
                  <p>It sends the merchant to the PAYMILL Connect page
                     where the merchant can login or register to authorize your connect request.</p>
                 <p><a href="https://paymill.com/en-gb/unite-documentation/">Read more about how to build the connect URL.</a></p>
-                <p>If you want to create a transaction with a fee, you have to add a payment first. Go to step <a href="payment.php">Payment</a>.</p>
+                <p>If you want to create a transaction with a fee, you have to add a <a href="payment.php">fee payment</a> first.</p>
           </div>
           <ul class="list-group">
             <li class="list-group-item">

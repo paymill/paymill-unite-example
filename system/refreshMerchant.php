@@ -136,15 +136,15 @@
                         <i class="fa fa-code fa-fw "></i>2. Connect
                     </a>
                     <ol >
-                        <li ><a href="../connect.php">Connect to a Merchant</a></li>
-                        <li><a href="../payment.php">Payment</a></li>
+                        <li ><a href="../connect.php">Connect a Merchant</a></li>
+                        <li><a href="../payment.php">Fee payment</a></li>
                     </ol>
                 </li>
                  <li>
                     <a href="../shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
                 </li>
                  <li class="active">
-                    <a href="../refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh Merchant</a>
+                    <a href="../refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh token</a>
                 </li>
             </ul>
         </nav>

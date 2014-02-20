@@ -3,7 +3,7 @@
 
     require 'library/unite.php';
 
-     $paymentId = "[your-current-payment]";
+     $paymentId = "[your-current-fee-payment]";
 
     if(isset($_SESSION['payment']['id'])) {
         $paymentId = $_SESSION['payment']['id'];
@@ -110,15 +110,15 @@
                         <i class="fa fa-code fa-fw "></i>2. Connect
                     </a>
                     <ol >
-                        <li><a href="connect.php">Connect to a Merchant</a></li>
-                        <li class="active"><a href="#">Payment</a></li>
+                        <li><a href="connect.php">Connect a Merchant</a></li>
+                        <li class="active"><a href="#">Fee payment</a></li>
                     </ol>
                 </li>
                  <li>
                     <a href="shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
                 </li>
                  <li>
-                    <a href="refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh Merchant</a>
+                    <a href="refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh token</a>
                 </li>
             </ul>
         </nav>
@@ -129,10 +129,10 @@
             <form class="form-horizontal" role="form" id="create-payment">
                 <div class="panel panel-default">
                   <div class="panel-heading">
-                    <h3 class="panel-title">Add a fee</h3>
+                    <h3 class="panel-title">Add a fee payment</h3>
                   </div>
                   <div class="panel-body">
-                    <p>If you want to add a fee to your unite transactions, your merchants first need to
+                    <p>If you want to add a fee to your Unite transactions, your merchants first need to
                         provide a payment method from which we can charge the demanded fees. <br>
                         Read more about the <a href="https://paymill.com/en-gb/unite-documentation/" target="_blank">fee payment</a>.
                     </p>
@@ -167,11 +167,9 @@
 
                 <div class="panel panel-danger">
                   <div class="panel-heading">
-                    <h3 class="panel-title">Generate a payment</h3>
+                    <h3 class="panel-title">Generate a fee payment</h3>
                   </div>
                   <div class="panel-body">
-
-                        <p>For adding a transaction with fees you have to create a payment</p>
                         <p>
                             <strong>Your current Payment:</strong>
                             <code id="payment-id"><?php echo $paymentId; ?></code>
@@ -204,7 +202,7 @@
                             <label>Currency</label>
                             <input  class="card-currency form-control " name="currency" type="text" placeholder="EUR" size="20" value="EUR" />
                         </div>
-                        <button type="submit" class="btn btn-sm btn-primary submit-button pull-right" >Create payment</button>
+                        <button type="submit" class="btn btn-sm btn-primary submit-button pull-right" >Create fee payment</button>
 
                   </div>
                 </div>
