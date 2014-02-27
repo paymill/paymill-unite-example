@@ -201,7 +201,7 @@
                                     <label><input type="checkbox" name="scope[]" value="payments_rw" <?php if(strpos($scopes, 'payments_rw') !== false) { echo " checked"; } ?>>payments_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="refunds_rw" <?php if(strpos($scopes, 'refunds_rw') !== false) { echo " checked"; } ?>>refunds_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="webhooks_rw" <?php if(strpos($scopes, 'webhooks_rw') !== false) { echo " checked"; } ?>>webhooks_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="frauds_r" <?php if(strpos($scopes, 'frauds_rw') !== false) { echo " checked"; } ?>>frauds_rw</label><br>
+                                    <label><input type="checkbox" name="scope[]" value="frauds_rw" <?php if(strpos($scopes, 'frauds_rw') !== false) { echo " checked"; } ?>>frauds_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="subscriptions_rw" <?php if(strpos($scopes, 'subscriptions_rw') !== false) { echo " checked"; } ?>>subscriptions_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="offers_rw" <?php if(strpos($scopes, 'offers_rw') !== false) { echo " checked"; } ?>>offers_rw</label><br>
                                     <label><input type="checkbox" name="scope[]" value="preauthorizations_rw" <?php if(strpos($scopes, 'preauthorizations_rw') !== false) { echo " checked"; } ?>>preauthorizations_rw</label><br>
