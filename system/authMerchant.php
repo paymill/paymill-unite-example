@@ -1,6 +1,5 @@
 <?php
     session_start();
-
     include '../library/unite.php';
 
     $success = false;
@@ -186,7 +185,7 @@
             <ul class="list-group">
               <li class="list-group-item">ID: <code><?php echo $result['merchant_id']; ?></code></li>
               <li class="list-group-item">
-                  Status: <code><?php echo isset($accessKeys['live']) ?
+                  Status: <code><?php echo ($_SESSION['accessMerchant']['canDoLiveTransactions'] === '1') ?
                   "Can do live" : "Can only do test"; ?> transactions</code></li>
             </ul>
           </div>
@@ -205,7 +204,7 @@
             </ul>
           </div>
 
-          <?php if(isset($accessKeys['live'])): ?>
+          <?php if($_SESSION['accessMerchant']['canDoLiveTransactions'] === '1'): ?>
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <h3 class="panel-title">Merchant allows live requests</h3>
