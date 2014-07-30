@@ -3,23 +3,22 @@
 
     require 'library/unite.php';
 
-         if(!isset($_SESSION['queryString'])){
-            $queryString = 'client_id=' . $client_id . '&scope=' . $scope
-                . '&response_type=code&redirect_uri=' . $redirect_uri;
-            $_SESSION['queryString'] = $queryString;
-            $_SESSION['queryStringVal'] = $queryString;
-            $queryStringVal = $queryString;
-            } else {
-                $queryString  = $_SESSION['queryString'];
-                $queryStringVal = $_SESSION['queryStringVal'];
 
-            }
 
-        if(isset($_POST['scope']) && isset( $_POST['redirectUri']) && isset($_POST['clientId'])) {
+        $queryString  = "";
+        $scope        = isset($_POST['scope']) ? $_POST['scope'] : $_SESSION['userConfig']['scope'];
+        $client_id    = isset($_POST['clientId']) ? $_POST['clientId'] : $_SESSION['userConfig']['clientId'];
+        $redirect_uri = isset($_POST['redirectUri']) ? $_POST['redirectUri'] : $_SESSION['userConfig']['redirectUri'];
+        $checksum     = isset($_SESSION['userConfig']['checksum']) ? $_SESSION['userConfig']['checksum'] : null;
+
+
+        // set session
+        if (isset($_POST['scope']) && isset( $_POST['redirectUri']) && isset($_POST['clientId'])) {
             $scope = $_POST['scope'];
+
             $scopes = null;
             foreach ($scope as $scopeVal) {
-                if( $scopes === null) {
+                if( !$scopes) {
                     $scopes = $scopeVal;
                 } else {
                     $scopes = $scopes.' '.$scopeVal;
@@ -28,58 +27,51 @@
             $scope = $scopes;
 
             $_SESSION['userConfig'] = array(
-                                                'bridgeUrl' => $_POST['bridgeUrl'],
-                                                'apiRoot' => $_POST['apiRoot'],
-                                                'paymillRoot' => $_POST['paymillRoot'],
-                                                'clientId' => $_POST['clientId'],
-                                                'clientSecret' => $_POST['clientSecret'],
-                                                'grantType' => $_POST['grantType'],
-                                                'scope' =>  $scope,
-                                                'redirectUri' => $_POST['redirectUri']
-                                            );
-            $_SESSION['userConfig']['checksum'] = null;
+                'bridgeUrl'    => $_POST['bridgeUrl'],
+                'apiRoot'      => $_POST['apiRoot'],
+                'paymillRoot'  => $_POST['paymillRoot'],
+                'clientId'     => $_POST['clientId'],
+                'clientSecret' => $_POST['clientSecret'],
+                'grantType'    => $_POST['grantType'],
+                'scope'        => $scope,
+                'redirectUri'  => $_POST['redirectUri'],
+                'checksum'     => $checksum
+            );
 
+            $queryString = 'client_id=' . $client_id . '&scope=' . $scope
+            . '&response_type=code&redirect_uri=' . $redirect_uri;
+
+            if ($checksum) {
+                $queryString = $queryString . '&checksum=' . $checksum;
             }
+        }
 
-            if(isset($_SESSION['userConfig'])) {
+        // session exists
+        if(isset($_SESSION['userConfig'])) {
 
-                $redirect_uri = $_SESSION['userConfig']['redirectUri'];
-                $redirect_uri = urlencode($redirect_uri);
+            $redirect_uri = $_SESSION['userConfig']['redirectUri'];
+            $redirect_uri = urlencode($redirect_uri);
+            $client_id    =  $_SESSION['userConfig']['clientId'];
+            $scope        = str_replace(' ', '+', $_SESSION['userConfig']['scope']);
 
-                $client_id =  $_SESSION['userConfig']['clientId'];
+            $queryStringl = 'client_id=' . $client_id . '&scope=' . $scope
+            . '&response_type=code&redirect_uri=' . $redirect_uri;
+        }
 
-                $scope = str_replace(' ', '+', $_SESSION['userConfig']['scope']);
-
-                $queryStringVal = 'client_id=' . $client_id . '&scope=' . $scope
-                . '&response_type=code&redirect_uri=' . $redirect_uri;
-
-                $_SESSION['queryStringNoCheck'] = $queryStringVal;
-                if(isset($_SESSION['userConfig']['checksum']))
-                {
-                    $schecksum =  $_SESSION['userConfig']['checksum'];
-                    $queryStringVal = $_SESSION['queryStringVal'] . '&checksum=' . $schecksum;
-                }
-                $_SESSION['queryStringVal'] = $queryStringVal;
-            } else {
-                $schecksum = "";
-                $queryStringVal = $queryString;
-            }
-
-
-    //create checksum
-    $checksum = null;
-    if(isset($_POST['hash_token']))
-    {
-            $checksum = hash_hmac('sha256', $_SESSION['queryStringNoCheck'], $_POST['hash_token']);
-            $_SESSION['userConfig']['checksum'] = $checksum;
+        //create checksum
+        if(isset($_POST['hash_token']))
+        {
+            $checksum                            = hash_hmac('sha256', $_SESSION['queryString'], $_POST['hash_token']);
+            $_SESSION['userConfig']['checksum']  = $checksum;
             $_SESSION['userConfig']['hashToken'] = $_POST['hash_token'];
-            $queryStringVal = $_SESSION['queryStringNoCheck'] . '&checksum=' . $_SESSION['userConfig']['checksum'];
-            $_SESSION['queryStringVal'] = $queryStringVal;
-            $_SESSION['userConfig']['checksum'] = $checksum;
-    }
+            $queryString                         = $_SESSION['queryString'] . '&checksum=' . $_SESSION['userConfig']['checksum'];
+        }
 
+        $_SESSION['queryString'] = $queryString;
 
 ?>
+
+
 <!DOCTYPE html>
 
 <html lang="en-gb">
@@ -137,12 +129,12 @@
 
                 <p>Include a button like this into your connect page.</p>
                 <p>
-                <a href="<?php echo $paymill_root . '/?' . $queryStringVal ; ?>" class="btn btn-primary">
+                <a href="<?php echo $paymill_root . '/?' . $queryString ; ?>" class="btn btn-primary">
                     Connect your PAYMILL account with this app.
                 </a>
                 </p>
                 <p>The generated link is based on your settings in <a href="connect.php">Step1 - Config</a>:</p>
-                <pre><?php echo $queryStringVal; ?></pre>
+                <pre><?php echo $queryString; ?></pre>
                 <p><br>*Click the button to test the behavior with your settings*</p>
                  <p>It sends the merchant to the PAYMILL Connect page
                     where the merchant can login or register to authorize your connect request.</p>
@@ -168,31 +160,30 @@
                 </p>
 
                 <p>
-                <strong>Note:</strong> To generate a checksum you first need to activate the checksum validtaion for your app.<br>
-                To do so, go to the <em><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> App -> App details -> Checksum validation -> check activate -> save</em>.<br>
-                Now you should see the <em>hash token</em> for your app to generate the checksum out of the URL query string.
+                    <strong>Note:</strong> To generate a checksum you first need to activate the checksum validtaion for your app.<br>
+                    To do so, go to the <em><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> App -> App details -> Checksum validation -> check activate -> save</em>.<br>
+                    Now you should see the <em>hash token</em> for your app to generate the checksum out of the URL query string.
                 </p>
                 <p>
                     <strong>Your current checksum:</strong>
-                    <code><?php echo ($checksum? $checksum : "[your-checksum-generated-below]"); ?></code>
+                    <code><?php echo ($checksum ? $checksum : "[your-checksum-generated-below]"); ?></code>
                 </p>
-
                 <p>
                     Use this form to generate the (new) checksum for the current connect link (it will be automatically added to the example link above).
                 </p>
                 <p>
-                <form class="form-horizontal" action="" method="post" role="form">
-                    Please enter your App hash token:<br>
-                    <div class="form-group">
-                        <div class="col-sm-4">
-                            <input class="form-control" type="text" name="hash_token" placeholder="<enter-your-hash-token>" />
+                    <form class="form-horizontal" action="" method="post" role="form">
+                        Please enter your App hash token:<br>
+                        <div class="form-group">
+                            <div class="col-sm-4">
+                                <input class="form-control" type="text" name="hash_token" placeholder="<enter-your-hash-token>" />
 
+                            </div>
+                            <div class="col-sm-3">
+                                <input class="btn btn-default" type="submit" value="Generate" />
+                            </div>
                         </div>
-                        <div class="col-sm-3">
-                            <input class="btn btn-default" type="submit" value="Generate" />
-                        </div>
-                    </div>
-                </form>
+                    </form>
                 </p>
                 <p><a href="https://paymill.com/en-gb/unite-documentation/">Read more about checksum validation.</a></p>
           </div>
@@ -203,21 +194,28 @@
               <div class="panel-heading">
                 <h3 class="panel-title">API Response</h3>
               </div>
-              <div class="panel-body">
-              </div>
+              <div class="panel-body"></div>
               <div class="panel-footer"><a href="#" onclick="$('.api-response').addClass('hidden'); return false;">close</a></div>
         </div>
 
-
-        <div>
-          <a href="." class="btn btn-success btn-sm pull-left">
-            <span class="glyphicon glyphicon-chevron-left "></span>
-            Back to intro
-         </a>
-         <a href="shopping-cart.php" class="btn btn-success btn-sm pull-right">
-            Do a test transaction
-            <span class="glyphicon glyphicon-chevron-right "></span>
-         </a>
+        <div class="container row">
+            <div class="col-sm-4">
+                <a href="." class="btn btn-success btn-sm pull-left">
+                    <span class="glyphicon glyphicon-chevron-left "></span>
+                    Back to intro
+                </a>
+            </div>
+            <div class="col-sm-4 text-center">
+                <a href="<?php echo $paymill_root . '/?' . $queryString ; ?>" class="btn btn-primary btn-sm">
+                    Connect your PAYMILL account with this app.
+                </a>
+            </div>
+            <div class="col-sm-4">
+                <a href="shopping-cart.php" class="btn btn-success btn-sm pull-right">
+                    Do a test transaction
+                    <span class="glyphicon glyphicon-chevron-right "></span>
+                </a>
+            </div>
         </div>
 
         <div class="Footer">

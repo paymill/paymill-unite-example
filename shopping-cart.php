@@ -2,30 +2,30 @@
     session_start();
     include 'library/unite.php';
 
-    $disabled = "";
-    $last4 = "";
-    $cardholder = "";
-    $expiredate =  "";
-    $payment_id =  "";
-    $paymillToken = "";
+    $disabled        = "";
+    $last4           = "";
+    $cardholder      = "";
+    $expiredate      = "";
+    $payment_id      = "";
+    $paymillToken    = "";
     $public_live_key = "no";
-    $public_test_key =  "";
-
+    $public_test_key = "";
 
     if(!isset($_SESSION['payment']))
     {
         $disabled = "disabled";
     } else {
-        $last4 =  $_SESSION['payment']['last4'];
-        $cardholder = $_SESSION['payment']['card_holder'] ;
+        $last4        = $_SESSION['payment']['last4'];
+        $cardholder   = $_SESSION['payment']['card_holder'] ;
         $expire_month = $_SESSION['payment']['expire_month'];
-        $expire_year = $_SESSION['payment']['expire_year'];
-        $expiredate = $_SESSION['payment']['expire_month']. ' / ' . $_SESSION['payment']['expire_year'] ;
-        $payment_id = $_SESSION['payment']['id'];
-        $paymillToken =  $_SESSION['payment']['paymillToken'];
-        $number =  $_SESSION['payment']['number'];
-        $cvc =  $_SESSION['payment']['cvc'];
+        $expire_year  = $_SESSION['payment']['expire_year'];
+        $expiredate   = $_SESSION['payment']['expire_month']. ' / ' . $_SESSION['payment']['expire_year'] ;
+        $payment_id   = $_SESSION['payment']['id'];
+        $paymillToken = $_SESSION['payment']['paymillToken'];
+        $number       = $_SESSION['payment']['number'];
+        $cvc          = $_SESSION['payment']['cvc'];
     }
+
     if($_SESSION['accessMerchant']['canDoLiveTransactions'] === "1") {
         $public_live_key = $_SESSION['accessMerchant']['publicLiveKey'];
     }
@@ -313,7 +313,7 @@
                                    Used public test key: <code><?php echo $public_test_key; ?></code><br>
                                    Live key: <code><?php echo $public_live_key; ?></code>
                                <?php else: ?>
-                                   <h4 class="text-danger">Do don't have access keys yet. Please first connect a merchant:</h4>
+                                   <h4 class="text-danger">You don't have access keys yet. Please first connect a merchant:</h4>
                                    <a href="connect.php" class="btn btn-primary btn-sm">
                                       Connect page
                                    </a>
@@ -369,7 +369,7 @@
                                    Used public test key: <code><?php echo $public_test_key; ?></code><br>
                                    Live key: <code><?php echo $public_live_key; ?></code>
                                <?php else: ?>
-                                    <h4 class="text-danger">Do don't have access keys yet. Please first connect a merchant:</h4>
+                                    <h4 class="text-danger">You don't have access keys yet. Please first connect a merchant:</h4>
                                    <a href="connect.php" class="btn btn-primary btn-sm">
                                       Connect page
                                    </a>

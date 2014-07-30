@@ -4,22 +4,38 @@
 $bridge_url         = 'https://bridge.chipmunk.dev/';
 $paymill_root       = 'https://connect.chipmunk.dev/';
 $paymill_api_root   = 'https://api.chipmunk.dev/v2/';
+// does session exists
+if(isset($_SESSION['userConfig'])) {
+    $client_id        = $_SESSION['userConfig']['clientId'];
+    $client_secret    = $_SESSION['userConfig']['clientSecret'];
 
-// App settings:
-$client_id          = 'app_66237214a4ea54303386401c2cfb28c47a17df384';
-$client_secret      = '0cd386c8c18a328fbc94dfd4e98f0e82';
+    $grant_type       = $_SESSION['userConfig']['grantType'];
+    $scopes           = $_SESSION['userConfig']['scope'];
 
-// Requested permissions:
-$grant_type         = 'authorization_code';
-$scope              = 'transactions_w clients_w payments_w refunds_w webhooks_w';
+    $redirect_uri     = $_SESSION['userConfig']['redirectUri'];
 
-// Redirect URI
-$redirect_uri       = 'https://market.chipmunk.dev/system/authMerchant.php';
+    $bridge_url       = $_SESSION['userConfig']['bridgeUrl'];
+    $paymill_api_root = $_SESSION['userConfig']['apiRoot'];
+    $paymill_root     = $_SESSION['userConfig']['paymillRoot'];
+    $redirect_uri     = $_SESSION['userConfig']['redirectUri'];
+} else {
+    // App settings:
+    $client_id     = 'app_66237214a4ea54303386401c2cfb28c47a17df384';
+    $client_secret = '0cd386c8c18a328fbc94dfd4e98f0e82';
+
+    // Requested permissions:
+    $grant_type    = 'authorization_code';
+    $scopes        = 'transactions_w clients_w payments_w refunds_w webhooks_w';
+
+    // Redirect URI
+    $redirect_uri  = 'https://market.chipmunk.dev/system/authMerchant.php';
+
+}
 
 // Transaction keys (available after successful authorization)
-$public_key         = getPublicKeyFromStorage();
-$private_key        = getPrivateKeyFromStorage();
-$is_live            = getLiveModeFromStorage();
+$public_key  = getPublicKeyFromStorage();
+$private_key = getPrivateKeyFromStorage();
+$is_live     = getLiveModeFromStorage();
 
 
 //

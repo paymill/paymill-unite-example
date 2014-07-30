@@ -28,7 +28,6 @@
               'client_secret' => $client_secret
           );*/
 
-
           $fields = array(
               'grant_type'    =>  $_SESSION['userConfig']['grantType'] ,
               'scope'         =>  $_SESSION['userConfig']['scope'],
@@ -112,20 +111,18 @@
 
               //SAVE in SESSION
               $_SESSION['accessMerchant'] = array(
-                                                  'canDoLiveTransactions' => $liveTRX,
-                                                  'privateTestKey' => $accessKeys['test']['private_key'],
-                                                  'publicTestKey' => $accessKeys['test']['public_key'],
-                                                  'privateLiveKey' => $accessKeys['live']['private_key'],
-                                                  'publicLiveKey' => $accessKeys['live']['public_key'],
-                                                  'refreshToken' => $result['refresh_token'],
-                                                  'merchantId' =>  $result['merchant_id'],
-                                                  'tokenType' => $result['token_type'],
-                                                  'expires_in' => $result['expires_in'],
-                                                  'payment_methods' => $result['payment_methods'],
-                                                  'code' => $code
-                                                  );
-
-
+                'canDoLiveTransactions' => $liveTRX,
+                'privateTestKey'        => $accessKeys['test']['private_key'],
+                'publicTestKey'         => $accessKeys['test']['public_key'],
+                'privateLiveKey'        => $accessKeys['live']['private_key'],
+                'publicLiveKey'         => $accessKeys['live']['public_key'],
+                'refreshToken'          => $result['refresh_token'],
+                'merchantId'            => $result['merchant_id'],
+                'tokenType'             => $result['token_type'],
+                'expires_in'            => $result['expires_in'],
+                'payment_methods'       => $result['payment_methods'],
+                'code'                  => $code
+              );
           }
       }
 
@@ -150,24 +147,16 @@
         </div>
         <nav>
             <ul>
-                <li >
-                    <a href="../index.php" ><i class="fa fa-code fa-fw"></i>1. Configuration</a>
-                </li>
-                 <li  class="active">
-                    <a href="#">
-                        <i class="fa fa-code fa-fw "></i>2. Connect
-                    </a>
-                    <ol >
+                <li><a href="../index.php" ><i class="fa fa-code fa-fw"></i>1. Configuration</a></li>
+                 <li class="active">
+                    <a href="#"><i class="fa fa-code fa-fw "></i>2. Connect</a>
+                    <ol>
                         <li class="active"><a href="">Connect a Merchant</a></li>
                         <li><a href="../payment.php">Fee payment</a></li>
                     </ol>
                 </li>
-                 <li>
-                    <a href="../shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a>
-                </li>
-                 <li>
-                    <a href="../refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh token</a>
-                </li>
+                <li><a href="../shopping-cart.php"><i class="fa fa-code fa-fw"></i>3. Shopping Cart</a></li>
+                <li><a href="../refresh-merchant.php"><i class="fa fa-code fa-fw"></i>4. Refresh token</a></li>
             </ul>
         </nav>
     </section>

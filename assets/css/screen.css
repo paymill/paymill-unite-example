@@ -11516,7 +11516,7 @@ i.status-chargeback:after {
   float: right;
 }
 .configForm input[type="text"] {
-  width: 480px;
+  width: 100%;
 }
 .configForm input[readonly] {
   background-color: #dde2e4;
