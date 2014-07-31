@@ -26,14 +26,13 @@
         $cvc          = $_SESSION['payment']['cvc'];
     }
 
-    if($_SESSION['accessMerchant']['canDoLiveTransactions'] === "1") {
-        $public_live_key = $_SESSION['accessMerchant']['publicLiveKey'];
-    }
-
     if(isset($_SESSION['accessMerchant']['publicTestKey'])) {
         $public_test_key = $_SESSION['accessMerchant']['publicTestKey'];
     }
 
+    if($_SESSION['accessMerchant']['canDoLiveTransactions'] === "1") {
+        $public_live_key = $_SESSION['accessMerchant']['publicLiveKey'];
+    }
 ?>
 
 
@@ -49,7 +48,7 @@
         <link rel="stylesheet" href="assets/css/screen.css">
 
         <script type="text/javascript">
-            var PAYMILL_PUBLIC_KEY = '<?php echo $public_key; ?>';
+            var PAYMILL_PUBLIC_KEY = '<?php echo $public_test_key; ?>';
 
             $(document).ready(function() {
                 //Without fee
@@ -297,19 +296,19 @@
 
                                     <div class="form-group">
                                         <label>Price (in Cent)</label>
-                                        <input class="card-amount form-control" name="camount" type="text" value="250" size="20" />
+                                        <input class="card-amount form-control" name="card-amount" type="text" value="250" size="20" />
                                     </div>
                                     <div class="form-group">
                                         <label>Currency</label>
-                                        <input class="card-currency form-control" name="currency" type="text" placeholder="EUR" size="20" value="EUR" />
+                                        <input class="card-currency form-control" name="card-currency" type="text" placeholder="EUR" size="20" value="EUR" />
                                     </div>
-                                    <?php if($public_key): ?>
+                                    <?php if($public_test_key): ?>
                                     <button class="btn btn-sm btn-primary" type="submit" >Buy now</button>
                                     <?php endif; ?>
                                 </form>
                            </div>
                            <div class="panel-footer">
-                               <?php if($public_key): ?>
+                               <?php if($public_test_key): ?>
                                    Used public test key: <code><?php echo $public_test_key; ?></code><br>
                                    Live key: <code><?php echo $public_live_key; ?></code>
                                <?php else: ?>
@@ -359,13 +358,13 @@
                                         <label>Currency</label>
                                         <input  class="fee-currency form-control" name="card-currency" type="text" placeholder="EUR" size="20" value="EUR" />
                                     </div>
-                                    <?php if($public_key): ?>
+                                    <?php if($public_test_key): ?>
                                     <button class="btn btn-sm btn-primary" type="submit" <?php echo $disabled; ?>>Buy now</button>
                                     <?php endif; ?>
                                 </form>
                            </div>
                            <div class="panel-footer">
-                               <?php if($public_key): ?>
+                               <?php if($public_test_key): ?>
                                    Used public test key: <code><?php echo $public_test_key; ?></code><br>
                                    Live key: <code><?php echo $public_live_key; ?></code>
                                <?php else: ?>

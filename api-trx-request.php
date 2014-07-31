@@ -19,8 +19,8 @@ $token  = $_POST['paymillToken'];
 if($_POST['withFee'] === '0' ) {
 
 	// This must be the only value you send via the form:
-	$amount   = 250;
-	$currency = 'EUR';
+	$amount   = $_POST['card-amount'];
+	$currency = $_POST['card-currency'];
 	$fee      = 0;
 	// Payment object which is needed for the fee collection:
 	$fee_payment = null; //'<YOUR-MERCHANTS-PAYMENT-ID>';
@@ -34,7 +34,6 @@ if($_POST['withFee'] === '0' ) {
 }
 
 $private_key = $_SESSION['accessMerchant']['privateTestKey'];
-
 
 // The connected merchant need to be a client of your app with a valid
 // payment object. Normally you would ask your merchant to register a payment

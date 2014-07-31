@@ -3,14 +3,12 @@
 
     require 'library/unite.php';
 
-
-
         $queryString  = "";
         $scope        = isset($_POST['scope']) ? $_POST['scope'] : $_SESSION['userConfig']['scope'];
         $client_id    = isset($_POST['clientId']) ? $_POST['clientId'] : $_SESSION['userConfig']['clientId'];
         $redirect_uri = isset($_POST['redirectUri']) ? $_POST['redirectUri'] : $_SESSION['userConfig']['redirectUri'];
         $checksum     = isset($_SESSION['userConfig']['checksum']) ? $_SESSION['userConfig']['checksum'] : null;
-
+        $hasConnected = isset($_SESSION['accessMerchant']);
 
         // set session
         if (isset($_POST['scope']) && isset( $_POST['redirectUri']) && isset($_POST['clientId'])) {
@@ -41,6 +39,8 @@
             $queryString = 'client_id=' . $client_id . '&scope=' . $scope
             . '&response_type=code&redirect_uri=' . $redirect_uri;
 
+            $queryStringWithoutChecksum = $queryString;
+
             if ($checksum) {
                 $queryString = $queryString . '&checksum=' . $checksum;
             }
@@ -53,15 +53,22 @@
             $redirect_uri = urlencode($redirect_uri);
             $client_id    =  $_SESSION['userConfig']['clientId'];
             $scope        = str_replace(' ', '+', $_SESSION['userConfig']['scope']);
+            $checksum     = $_SESSION['userConfig']['checksum'];;
 
-            $queryStringl = 'client_id=' . $client_id . '&scope=' . $scope
-            . '&response_type=code&redirect_uri=' . $redirect_uri;
+            $queryString = 'client_id=' . $client_id . '&scope=' . $scope
+                . '&response_type=code&redirect_uri=' . $redirect_uri;
+
+            $queryStringWithoutChecksum = $queryString;
+
+            if ($checksum) {
+                $queryString = $queryString . '&checksum=' . $checksum;
+            }
         }
 
         //create checksum
         if(isset($_POST['hash_token']))
         {
-            $checksum                            = hash_hmac('sha256', $_SESSION['queryString'], $_POST['hash_token']);
+            $checksum                            = hash_hmac('sha256', $queryStringWithoutChecksum, $_POST['hash_token']);
             $_SESSION['userConfig']['checksum']  = $checksum;
             $_SESSION['userConfig']['hashToken'] = $_POST['hash_token'];
             $queryString                         = $_SESSION['queryString'] . '&checksum=' . $_SESSION['userConfig']['checksum'];
@@ -129,7 +136,7 @@
 
                 <p>Include a button like this into your connect page.</p>
                 <p>
-                <a href="<?php echo $paymill_root . '/?' . $queryString ; ?>" class="btn btn-primary">
+                <a href="<?php echo $paymill_root . '?' . $queryString ; ?>" class="btn btn-primary">
                     Connect your PAYMILL account with this app.
                 </a>
                 </p>
@@ -198,22 +205,23 @@
               <div class="panel-footer"><a href="#" onclick="$('.api-response').addClass('hidden'); return false;">close</a></div>
         </div>
 
+
         <div class="container row">
-            <div class="col-sm-4">
+            <div class="<?php  echo( $hasConnected ) ?  'col-sm-4' : 'col-sm-6' ?>">
                 <a href="." class="btn btn-success btn-sm pull-left">
                     <span class="glyphicon glyphicon-chevron-left "></span>
                     Back to intro
                 </a>
             </div>
-            <div class="col-sm-4 text-center">
-                <a href="<?php echo $paymill_root . '/?' . $queryString ; ?>" class="btn btn-primary btn-sm">
-                    Connect your PAYMILL account with this app.
-                </a>
-            </div>
-            <div class="col-sm-4">
-                <a href="shopping-cart.php" class="btn btn-success btn-sm pull-right">
+            <div class="<?php echo ( $hasConnected ) ?  'col-sm-4' : 'hide' ?>">
+                <a href="shopping-cart.php" class="btn btn-success btn-sm pull-left">
                     Do a test transaction
                     <span class="glyphicon glyphicon-chevron-right "></span>
+                </a>
+            </div>
+            <div class="<?php echo ( $hasConnected ) ?  'col-sm-4' : 'col-sm-6' ?>">
+                <a href="<?php echo $paymill_root . '/?' . $queryString ; ?>" class="btn btn-primary btn-sm pull-right">
+                    Connect your PAYMILL account with this app.
                 </a>
             </div>
         </div>

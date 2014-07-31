@@ -1,9 +1,9 @@
 <?php
 
 // Basic PAYMILL URLs:
-$bridge_url         = 'https://bridge.chipmunk.dev/';
-$paymill_root       = 'https://connect.chipmunk.dev/';
-$paymill_api_root   = 'https://api.chipmunk.dev/v2/';
+$bridge_url         = 'https://bridge.paymill.com/';
+$paymill_root       = 'https://connect.paymill.com/';
+$paymill_api_root   = 'https://api.paymill.com/v2/';
 // does session exists
 if(isset($_SESSION['userConfig'])) {
     $client_id        = $_SESSION['userConfig']['clientId'];
@@ -28,7 +28,7 @@ if(isset($_SESSION['userConfig'])) {
     $scopes        = 'transactions_w clients_w payments_w refunds_w webhooks_w';
 
     // Redirect URI
-    $redirect_uri  = 'https://market.chipmunk.dev/system/authMerchant.php';
+    $redirect_uri  = 'https://market.paymill.com/system/authMerchant.php';
 
 }
 
