@@ -1,111 +1,95 @@
 <?php
     session_start();
 
-    include '../library/unite.php';
+//
+// Refreshes the merchant data
+//
 
-    $success = true;
-    $code = $_SESSION['accessMerchant']['code'];
-    $msg = "";
+include '../library/unite.php';
 
-      if ($code) {
-          $url = $paymill_root . '/token';
-          $fields_string = '';
+$success = true;
+$code = $_SESSION['accessMerchant']['code'];
+$msg = "";
 
+  if ($code) {
+      $url = $paymill_root . '/token';
+      $fields_string = '';
+      // set needed parameter
+      $fields = array(
+          'grant_type'    =>  "refresh_token",
+          'scope'         =>  $_SESSION['userConfig']['scope'],
+          'refresh_token' =>  $_SESSION['accessMerchant']['refreshToken'],
+          'client_id'     =>  $_SESSION['userConfig']['clientId'] ,
+          'client_secret' =>  $_SESSION['userConfig']['clientSecret']
+      );
+      // create one string for GET-Request of needed parameter
+      foreach($fields as $key=>$value) {
+          $fields_string .= $key.'='.$value.'&';
+      }
+      rtrim($fields_string, '&');
 
-          //there is a bug for updating scope
-          //scope in Session
-         /* $scope = $_POST['scope'];
-          $scopes = null;
-            foreach ($scope as $scopeVal) {
-                if( $scopes === null) {
-                    $scopes = $scopeVal;
-                } else {
-                    $scopes = $scopes.' '.$scopeVal;
-                }
-            }
-          $scope = $scopes;
-          $_SESSION['userConfig']['scope'] = $scope;*/
+      //  create curl request
+      $ch = curl_init();
 
+      curl_setopt($ch,CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch,CURLOPT_POST, count($fields));
+      curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-          $fields = array(
-              'grant_type'    =>  "refresh_token",
-              //über Post holen
-              'scope'         =>  $_SESSION['userConfig']['scope'],
-              'refresh_token' =>  $_SESSION['accessMerchant']['refreshToken'],
-              'client_id'     =>  $_SESSION['userConfig']['clientId'] ,
-              'client_secret' =>  $_SESSION['userConfig']['clientSecret']
+      $result = curl_exec($ch);
+      $result = json_decode($result, true);
+
+      if(!$result || isset($result['error'])) {
+          $success = false;
+          $error   = $result['error'];
+          $msg     = $result['error_description'];
+      } else {
+          curl_close($ch);
+          // set permissions and accessKeys
+          $scope      = explode(' ', $result['scope']);
+          $accessKeys = $result['access_keys'];
+
+          // set live or test keys
+          if(isset($accessKeys['live'])) {
+              $key = $accessKeys['live'];
+              $canDoLiveTransactions = true;
+          } else {
+              $accessKeys['live'] = array(
+                'private_key' => null,
+                'public_key' => null
+              );
+              $key = $accessKeys['test'];
+              $canDoLiveTransactions = false;
+          }
+
+          // save merchant data
+          $list = array(
+            array(
+                $key['private_key'],
+                $result['refresh_token'],
+                $key['public_key'],
+                $result['merchant_id'],
+                $canDoLiveTransactions ? '1' : '0'
+            )
           );
 
+          $liveTRX = $canDoLiveTransactions ? '1' : '0';
 
-          foreach($fields as $key=>$value) {
-              $fields_string .= $key.'='.$value.'&';
-          }
-          rtrim($fields_string, '&');
+          //SAVE in SESSION
+          $_SESSION['accessMerchant']['canDoLiveTransactions']  = $liveTRX;
+          $_SESSION['accessMerchant']['privateTestKey'] = $accessKeys['test']['private_key'];
+          $_SESSION['accessMerchant']['publicTestKey'] = $accessKeys['test']['public_key'];
+          $_SESSION['accessMerchant']['privateLiveKey'] = $accessKeys['live']['private_key'];
+          $_SESSION['accessMerchant']['publicLiveKey'] = $accessKeys['live']['public_key'];
+          $_SESSION['accessMerchant']['refreshToken'] = $result['refresh_token'];
+          $_SESSION['accessMerchant']['merchantId'] =  $result['merchant_id'];
+          $_SESSION['accessMerchant']['tokenType'] = $result['token_type'];
+          $_SESSION['accessMerchant']['expires_in'] = $result['expires_in'];
+          $_SESSION['accessMerchant']['payment_methods'] = $result['payment_methods'];
 
-          $ch = curl_init();
-
-          curl_setopt($ch,CURLOPT_URL, $url);
-          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-          curl_setopt($ch,CURLOPT_POST, count($fields));
-          curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-          $result = curl_exec($ch);
-          #var_dump($result);
-          #die();
-          $result = json_decode($result, true);
-
-          if(!$result || isset($result['error'])) {
-              $success = false;
-              $error   = $result['error'];
-              $msg     = $result['error_description'];
-          } else {
-
-              //var_dump($info);
-              curl_close($ch);
-
-              $scope      = explode(' ', $result['scope']);
-              $accessKeys = $result['access_keys'];
-
-
-              //SAVE in merchant.csv
-              if(isset($accessKeys['live'])) {
-                  $key = $accessKeys['live'];
-                  $canDoLiveTransactions = true;
-              } else {
-                  $accessKeys['live'] = array(
-                                              'private_key' => null,
-                                              'public_key' => null
-                                               );
-                  $key = $accessKeys['test'];
-                  $canDoLiveTransactions = false;
-              }
-              $list = array(
-                  array(
-                      $key['private_key'],
-                      $result['refresh_token'],
-                      $key['public_key'],
-                      $result['merchant_id'],
-                      $canDoLiveTransactions ? '1' : '0'
-                  )
-              );
-
-              $liveTRX = $canDoLiveTransactions ? '1' : '0';
-
-              //SAVE in SESSION
-              $_SESSION['accessMerchant']['canDoLiveTransactions']  = $liveTRX;
-              $_SESSION['accessMerchant']['privateTestKey'] = $accessKeys['test']['private_key'];
-              $_SESSION['accessMerchant']['publicTestKey'] = $accessKeys['test']['public_key'];
-              $_SESSION['accessMerchant']['privateLiveKey'] = $accessKeys['live']['private_key'];
-              $_SESSION['accessMerchant']['publicLiveKey'] = $accessKeys['live']['public_key'];
-              $_SESSION['accessMerchant']['refreshToken'] = $result['refresh_token'];
-              $_SESSION['accessMerchant']['merchantId'] =  $result['merchant_id'];
-              $_SESSION['accessMerchant']['tokenType'] = $result['token_type'];
-              $_SESSION['accessMerchant']['expires_in'] = $result['expires_in'];
-              $_SESSION['accessMerchant']['payment_methods'] = $result['payment_methods'];
-
-          }
       }
+  }
 
 ?>
 <!DOCTYPE html>

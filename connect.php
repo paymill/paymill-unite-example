@@ -1,80 +1,73 @@
 <?php
     session_start();
 
-    require 'library/unite.php';
+    // set given parameters from POST or stored SESSION
+    $queryString  = "";
+    $scope        = isset($_POST['scope']) ? $_POST['scope'] : $_SESSION['userConfig']['scope'];
+    $client_id    = isset($_POST['clientId']) ? $_POST['clientId'] : $_SESSION['userConfig']['clientId'];
+    $redirect_uri = isset($_POST['redirectUri']) ? $_POST['redirectUri'] : $_SESSION['userConfig']['redirectUri'];
+    $paymill_root  = isset($_POST['paymillRoot']) ? $_POST['paymillRoot'] : $_SESSION['userConfig']['paymillRoot'];
+    $checksum     = isset($_SESSION['userConfig']['checksum']) ? $_SESSION['userConfig']['checksum'] : null;
+    $hasConnected = isset($_SESSION['accessMerchant']);
 
-        $queryString  = "";
-        $scope        = isset($_POST['scope']) ? $_POST['scope'] : $_SESSION['userConfig']['scope'];
-        $client_id    = isset($_POST['clientId']) ? $_POST['clientId'] : $_SESSION['userConfig']['clientId'];
-        $redirect_uri = isset($_POST['redirectUri']) ? $_POST['redirectUri'] : $_SESSION['userConfig']['redirectUri'];
-        $checksum     = isset($_SESSION['userConfig']['checksum']) ? $_SESSION['userConfig']['checksum'] : null;
-        $hasConnected = isset($_SESSION['accessMerchant']);
+    // set session values if POST values exist - expect hash_token, this will only recreate the query string
+    if (!empty($_POST) && !(isset($_POST['hash_token']))) {
+        $scope = $_POST['scope'];
 
-        // set session
-        if (isset($_POST['scope']) && isset( $_POST['redirectUri']) && isset($_POST['clientId'])) {
-            $scope = $_POST['scope'];
-
-            $scopes = null;
-            foreach ($scope as $scopeVal) {
-                if( !$scopes) {
-                    $scopes = $scopeVal;
-                } else {
-                    $scopes = $scopes.' '.$scopeVal;
-                }
-            }
-            $scope = $scopes;
-
-            $_SESSION['userConfig'] = array(
-                'bridgeUrl'    => $_POST['bridgeUrl'],
-                'apiRoot'      => $_POST['apiRoot'],
-                'paymillRoot'  => $_POST['paymillRoot'],
-                'clientId'     => $_POST['clientId'],
-                'clientSecret' => $_POST['clientSecret'],
-                'grantType'    => $_POST['grantType'],
-                'scope'        => $scope,
-                'redirectUri'  => $_POST['redirectUri'],
-                'checksum'     => $checksum
-            );
-
-            $queryString = 'client_id=' . $client_id . '&scope=' . $scope
-            . '&response_type=code&redirect_uri=' . $redirect_uri;
-
-            $queryStringWithoutChecksum = $queryString;
-
-            if ($checksum) {
-                $queryString = $queryString . '&checksum=' . $checksum;
+        // switch array to one string for all given permissions
+        $scopes = null;
+        foreach ($scope as $scopeVal) {
+            if( !$scopes) {
+                $scopes = $scopeVal;
+            } else {
+                $scopes = $scopes.' '.$scopeVal;
             }
         }
+        $scope = $scopes;
 
-        // session exists
-        if(isset($_SESSION['userConfig'])) {
+        // (re)store values into session
+        $_SESSION['userConfig'] = array(
+            'bridgeUrl'    => $_POST['bridgeUrl'],
+            'apiRoot'      => $_POST['apiRoot'],
+            'paymillRoot'  => $_POST['paymillRoot'],
+            'clientId'     => $_POST['clientId'],
+            'clientSecret' => $_POST['clientSecret'],
+            'grantType'    => $_POST['grantType'],
+            'scope'        => $scope,
+            'redirectUri'  => $_POST['redirectUri'],
+            'checksum'     => $checksum
+        );
+    }
 
-            $redirect_uri = $_SESSION['userConfig']['redirectUri'];
-            $redirect_uri = urlencode($redirect_uri);
-            $client_id    =  $_SESSION['userConfig']['clientId'];
-            $scope        = str_replace(' ', '+', $_SESSION['userConfig']['scope']);
-            $checksum     = $_SESSION['userConfig']['checksum'];;
+    // session exists
+    if(isset($_SESSION['userConfig'])) {
+        // set parameters from SESSION
+        $redirect_uri = $_SESSION['userConfig']['redirectUri'];
+        $redirect_uri = urlencode($redirect_uri);
+        $client_id    =  $_SESSION['userConfig']['clientId'];
+        $scope        = str_replace(' ', '+', $_SESSION['userConfig']['scope']);
+        $checksum     = $_SESSION['userConfig']['checksum'];;
+    }
 
-            $queryString = 'client_id=' . $client_id . '&scope=' . $scope
-                . '&response_type=code&redirect_uri=' . $redirect_uri;
+    // create parameter part for the connect link
+    $queryString = 'client_id=' . $client_id . '&scope=' . $scope
+                    . '&response_type=code&redirect_uri=' . $redirect_uri;
+    $queryStringWithoutChecksum = $queryString;
 
-            $queryStringWithoutChecksum = $queryString;
+    // create and save checksum if hash_token is given
+    // update the query string
+    if(isset($_POST['hash_token']))
+    {
+        $checksum                            = hash_hmac('sha256', $queryStringWithoutChecksum, $_POST['hash_token']);
+        $_SESSION['userConfig']['checksum']  = $checksum;
+        $_SESSION['userConfig']['hashToken'] = $_POST['hash_token'];
+        $queryString                         = $_SESSION['queryString'] . '&checksum=' . $_SESSION['userConfig']['checksum'];
+    } else if ($checksum) {
+          // if checksum also given, add to string
+        $queryString = $queryStringWithoutChecksum . '&checksum=' . $checksum;
+    }
 
-            if ($checksum) {
-                $queryString = $queryString . '&checksum=' . $checksum;
-            }
-        }
-
-        //create checksum
-        if(isset($_POST['hash_token']))
-        {
-            $checksum                            = hash_hmac('sha256', $queryStringWithoutChecksum, $_POST['hash_token']);
-            $_SESSION['userConfig']['checksum']  = $checksum;
-            $_SESSION['userConfig']['hashToken'] = $_POST['hash_token'];
-            $queryString                         = $_SESSION['queryString'] . '&checksum=' . $_SESSION['userConfig']['checksum'];
-        }
-
-        $_SESSION['queryString'] = $queryString;
+    $_SESSION['queryString'] = $queryString;
 
 ?>
 
@@ -88,11 +81,8 @@
     <script type="text/javascript" src="assets/js/bootstrap/bootstrap.min.js"></script>
     <script type="text/javascript" src="assets/js/main.js"></script>
     <link rel='shortcut icon' href="favicon.ico" type="image/ico" />
-
     <link rel="stylesheet" href="assets/css/screen.css">
-
     <script type="text/javascript" src="<?php echo $bridge_url; ?>"></script>
-
 </head>
 
 <body>
@@ -206,7 +196,7 @@
         </div>
 
 
-        <div class="container row">
+        <div class="container row" id="connect-buttons">
             <div class="<?php  echo( $hasConnected ) ?  'col-sm-4' : 'col-sm-6' ?>">
                 <a href="." class="btn btn-success btn-sm pull-left">
                     <span class="glyphicon glyphicon-chevron-left "></span>

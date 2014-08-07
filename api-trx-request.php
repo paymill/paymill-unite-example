@@ -23,14 +23,14 @@ if($_POST['withFee'] === '0' ) {
 	$currency = $_POST['card-currency'];
 	$fee      = 0;
 	// Payment object which is needed for the fee collection:
-	$fee_payment = null; //'<YOUR-MERCHANTS-PAYMENT-ID>';
+	$fee_payment = null;
 } else {
 	// This must be the only value you send via the form:
 	$amount   = $_POST['card-amount'];
 	$currency = $_POST['card-currency'];
 	$fee      = $_POST['card-fee'];
 	// Payment object which is needed for the fee collection:
-	$fee_payment = $_POST['payment_id'];
+	$fee_payment = $_POST['payment_id']; //'<YOUR-MERCHANTS-PAYMENT-ID>';
 }
 
 $private_key = $_SESSION['accessMerchant']['privateTestKey'];
@@ -41,25 +41,25 @@ $private_key = $_SESSION['accessMerchant']['privateTestKey'];
 // DB to overgive it here at this place.
 
 
+// for creating a transaction a token is needed
 if ($token) {
 
 	require "Services/Paymill/Transactions.php";
-
 	$transactionsObject = new Services_Paymill_Transactions($private_key, $paymill_api_root);
+    // save for creating a transaction
 	$params = array(
 		'amount'      => $amount,
 		'currency'    => $currency,
 		'token'       => $token,
 		'description' => 'Test Transaction' // Here you can save for shopping cart ID.
 	);
-
-
+    // if fees are given
     if($fee_payment && $fee) {
         $params['fee_payment'] = $fee_payment;
         $params['fee_amount'] = $fee;
     }
 
-
+    // create a transaction with given parameters
 	$transaction = $transactionsObject->create($params);
 
     // The return of the "create" method is an array with transaction

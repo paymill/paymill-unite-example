@@ -1,10 +1,10 @@
 <?php
     session_start();
 
-    require 'library/unite.php';
+    include 'library/unite.php';
 
-     $paymentId = "[your-current-fee-payment]";
-
+    // set created payment id or plaeholder
+    $paymentId = "[your-current-fee-payment]";
     if(isset($_SESSION['payment']['id'])) {
         $paymentId = $_SESSION['payment']['id'];
     }
@@ -159,7 +159,7 @@
                         <div class="form-group">
                             <label >Your Public test key
                                 <br> <i><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> API-Keys -> Test keys</i></label>
-                                <input type="text" placeholder="[public-test-key]" id="public-key" name="public" class="form-control"  >
+                                <input type="text" placeholder="[public-test-key]" id="public-key" name="public-key" class="form-control"  >
                         </div>
                     </p>
                   </div>

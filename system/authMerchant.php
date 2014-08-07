@@ -5,126 +5,107 @@
     $success = false;
     $code    = false;
 
+    // code parameter needed or error occur
     if($_GET['code']) {
         $success = true;
         $code = $_GET['code'];
         $error = false;
         $msg = 'Authorization was successful!';
-    }
-    else {
+    } else {
         $error = $_GET['error'];
         $msg = str_replace('+', ' ', $_GET['error_description']);
     }
 
+    if ($code) {
+        $url = $paymill_root . '/token';
+        $fields_string = '';
+        // set needed parameter
+        $fields = array(
+            'grant_type'    =>  $_SESSION['userConfig']['grantType'] ,
+            'scope'         =>  $_SESSION['userConfig']['scope'],
+            'code'          =>  $code,
+            'client_id'     =>  $_SESSION['userConfig']['clientId'] ,
+            'client_secret' =>  $_SESSION['userConfig']['clientSecret']
+        );
 
-      if ($code) {
-          $url = $paymill_root . '/token';
-          $fields_string = '';
-          /*$fields = array(
-              'grant_type'    => $grant_type,
-              'scope'         => 'transactions_w clients_w payments_w refunds_w webhooks_w',
-              'code'          => $code,
-              'client_id'     => $client_id,
-              'client_secret' => $client_secret
-          );*/
+        // concate parameters to one string
+        foreach($fields as $key=>$value) {
+            $fields_string .= $key.'='.$value.'&';
+        }
+        rtrim($fields_string, '&');
 
-          $fields = array(
-              'grant_type'    =>  $_SESSION['userConfig']['grantType'] ,
-              'scope'         =>  $_SESSION['userConfig']['scope'],
-              'code'          =>  $code,
-              'client_id'     =>  $_SESSION['userConfig']['clientId'] ,
-              'client_secret' =>  $_SESSION['userConfig']['clientSecret']
+        $ch = curl_init();
+
+        // create curl request
+        curl_setopt($ch,CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch,CURLOPT_POST, count($fields));
+        curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $result = curl_exec($ch);
+        $result = json_decode($result, true);
+
+        if(!$result || isset($result['error'])) {
+            $success = false;
+            $error   = $result['error'];
+            $msg     = $result['error_description'];
+        } else {
+          curl_close($ch);
+
+          // Deprecated since 2013-12-17:
+
+          //$list = array(
+          //    array($result['access_token'], $result['refresh_token'], $result['public_key'], $result['merchant_id'])
+          //);
+
+          // Get connect information from authorization code result
+
+          $scope      = explode(' ', $result['scope']);
+          $accessKeys = $result['access_keys'];
+
+          // set live or test keys
+          if(isset($accessKeys['live'])) {
+              $key = $accessKeys['live'];
+              $canDoLiveTransactions = true;
+          } else {
+              //for Session
+              $accessKeys['live'] = array(
+                'private_key' => null,
+                'public_key' => null
+                 );
+              $key = $accessKeys['test'];
+              $canDoLiveTransactions = false;
+          }
+          $list = array(
+          // save merchant data
+            array(
+              $key['private_key'],
+              $result['refresh_token'],
+              $key['public_key'],
+              $result['merchant_id'],
+              $canDoLiveTransactions ? '1' : '0'
+            )
           );
 
-          foreach($fields as $key=>$value) {
-              $fields_string .= $key.'='.$value.'&';
-          }
-          rtrim($fields_string, '&');
+          $liveTRX = $canDoLiveTransactions ? '1' : '0';
 
-          $ch = curl_init();
-
-          curl_setopt($ch,CURLOPT_URL, $url);
-          curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-          curl_setopt($ch,CURLOPT_POST, count($fields));
-          curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-          curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-          $result = curl_exec($ch);
-          #var_dump($result);
-          #die();
-          $result = json_decode($result, true);
-
-          if(!$result || isset($result['error'])) {
-              $success = false;
-              $error   = $result['error'];
-              $msg     = $result['error_description'];
-          } else {
-
-              //var_dump($info);
-              curl_close($ch);
-
-              // Deprecated since 2013-12-17:
-
-              //$list = array(
-              //    array($result['access_token'], $result['refresh_token'], $result['public_key'], $result['merchant_id'])
-              //);
-
-              // Get connect information from authorization code result
-
-              $scope      = explode(' ', $result['scope']);
-              $accessKeys = $result['access_keys'];
-
-
-              //SAVE in merchant.csv
-              if(isset($accessKeys['live'])) {
-                  $key = $accessKeys['live'];
-                  $canDoLiveTransactions = true;
-              } else {
-                  //for Session
-                  $accessKeys['live'] = array(
-                                              'private_key' => null,
-                                              'public_key' => null
-                                               );
-                  $key = $accessKeys['test'];
-                  $canDoLiveTransactions = false;
-              }
-              $list = array(
-                  array(
-                      $key['private_key'],
-                      $result['refresh_token'],
-                      $key['public_key'],
-                      $result['merchant_id'],
-                      $canDoLiveTransactions ? '1' : '0'
-                  )
-              );
-
-              /*
-              //CHANGE
-              $csv = 'merchant.csv';
-              $fp = fopen($csv, 'w');
-              foreach ($list as $row) {
-                  fputcsv($fp, $row);
-              }
-              fclose($fp);*/
-
-              $liveTRX = $canDoLiveTransactions ? '1' : '0';
-
-              //SAVE in SESSION
-              $_SESSION['accessMerchant'] = array(
-                'canDoLiveTransactions' => $liveTRX,
-                'privateTestKey'        => $accessKeys['test']['private_key'],
-                'publicTestKey'         => $accessKeys['test']['public_key'],
-                'privateLiveKey'        => $accessKeys['live']['private_key'],
-                'publicLiveKey'         => $accessKeys['live']['public_key'],
-                'refreshToken'          => $result['refresh_token'],
-                'merchantId'            => $result['merchant_id'],
-                'tokenType'             => $result['token_type'],
-                'expires_in'            => $result['expires_in'],
-                'payment_methods'       => $result['payment_methods'],
-                'code'                  => $code
-              );
-          }
-      }
+          //SAVE in SESSION
+          $_SESSION['accessMerchant'] = array(
+            'canDoLiveTransactions' => $liveTRX,
+            'privateTestKey'        => $accessKeys['test']['private_key'],
+            'publicTestKey'         => $accessKeys['test']['public_key'],
+            'privateLiveKey'        => $accessKeys['live']['private_key'],
+            'publicLiveKey'         => $accessKeys['live']['public_key'],
+            'refreshToken'          => $result['refresh_token'],
+            'merchantId'            => $result['merchant_id'],
+            'tokenType'             => $result['token_type'],
+            'expires_in'            => $result['expires_in'],
+            'payment_methods'       => $result['payment_methods'],
+            'code'                  => $code
+          );
+        }
+    }
 ?>
 <!DOCTYPE html>
 

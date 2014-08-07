@@ -1,5 +1,6 @@
 <?php
     session_start();
+
     include 'library/unite.php';
 
     $disabled        = "";
@@ -11,10 +12,12 @@
     $public_live_key = "no";
     $public_test_key = "";
 
+    // if a payment is not created, disable the buy-button
     if(!isset($_SESSION['payment']))
     {
         $disabled = "disabled";
     } else {
+        // if payment exists -> set parameters
         $last4        = $_SESSION['payment']['last4'];
         $cardholder   = $_SESSION['payment']['card_holder'] ;
         $expire_month = $_SESSION['payment']['expire_month'];
@@ -26,12 +29,15 @@
         $cvc          = $_SESSION['payment']['cvc'];
     }
 
-    if(isset($_SESSION['accessMerchant']['publicTestKey'])) {
-        $public_test_key = $_SESSION['accessMerchant']['publicTestKey'];
-    }
+    // if merchant has connected -> set public keys
+    if( isset($_SESSION['accessMerchant'])) {
+        if(isset($_SESSION['accessMerchant']['publicTestKey'])) {
+            $public_test_key = $_SESSION['accessMerchant']['publicTestKey'];
+        }
 
-    if($_SESSION['accessMerchant']['canDoLiveTransactions'] === "1") {
-        $public_live_key = $_SESSION['accessMerchant']['publicLiveKey'];
+        if($_SESSION['accessMerchant']['canDoLiveTransactions'] === "1") {
+            $public_live_key = $_SESSION['accessMerchant']['publicLiveKey'];
+        }
     }
 ?>
 
@@ -87,19 +93,17 @@
 
                 // fee
                 $("#payment-form-fee").submit(function(event) {
-                    console.log('click');
                     $(".payment-errors").text('');
                     $('.api-response').addClass('hidden');
 
                     // Deactivate submit button to avoid further clicks
                     $('.submit-button').attr("disabled", "disabled");
 
-                    PaymillResponseHandlerFee;
+                    PaymillResponseHandlerFee();
                     return false;
 
                 });
             });
-
 
             function PaymillResponseHandler(error, result) {
                 if (error) {
@@ -143,11 +147,11 @@
 
                     var formfee = $("#payment-form-fee");
                     // Insert token und payment_id into form in order to submit to server
-                    //var token = '<?php echo $paymillToken; ?>';
+                    var token = '<?php echo $paymillToken; ?>';
                     var paymentId = '<?php echo $payment_id; ?>';
 
                     // Insert token into form in order to submit to server
-                    //formfee.append("<input type='hidden' name='paymillToken' value='" + token + "'/>");
+                    formfee.append("<input type='hidden' name='paymillToken' value='" + token + "'/>");
                     formfee.append("<input type='hidden' name='payment_id' value='" + paymentId + "'/>");
                     formfee.append("<input type='hidden' name='withFee' value='1'/>");
 

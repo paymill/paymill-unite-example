@@ -1,8 +1,8 @@
 <?php
     session_start();
+    include 'library/unite.php';
 
-    require 'library/unite.php';
-
+    // if merchant has connected -> set parameter
     if(isset($_SESSION['accessMerchant']) ) {
             $client_id = $_SESSION['userConfig']['clientId'];
             $client_secret = $_SESSION['userConfig']['clientSecret'];
@@ -10,6 +10,7 @@
             $refresh_token = $_SESSION['accessMerchant']['refreshToken'];
             $hasMerchant = true;
       } else {
+    // or set placeholder
         $scopes = "";
         $refresh_token = "[your-generated-refresh-token]";
         $hasMerchant = false;
@@ -82,55 +83,9 @@
                             <input class="form-control"  type="text" name="clientSecret"  placeholder="<?php echo $client_secret; ?>" value="<?php echo $client_secret; ?>" />
                     </div>
                     <div class="form-group">
-                        <label >Your grant_type</label>
-                            <input readonly class="form-control"  type="text" name="grantType"  placeholder="<?php echo $grant_type; ?>" value="refresh_token" />
-                    </div>
-                    <div class="form-group">
                         <label >Your refresh_token</label>
                             <input class="form-control"  type="text" name="refreshToken"  placeholder="<?php echo $refresh_token; ?>" value="<?php echo $refresh_token; ?>" />
                     </div>
-<!--                     <div class="form-group">
-                        <label >Your scope</label>
-                            <div class="checkbox">
-                                <div class="col-md-4">
-                                    <label><input type="checkbox" name="scope[]" value="transactions_w" <?php if(strpos($scopes, 'transactions_w') !== false) { echo " checked"; } ?> >transactions_w</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="clients_w" <?php if(strpos($scopes, 'clients_w') !== false) { echo " checked"; } ?>>clients_w</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="payments_w" <?php if(strpos($scopes, 'payments_w') !== false) { echo " checked"; } ?>>payments_w</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="refunds_w" <?php if(strpos($scopes, 'refunds_w') !== false) { echo " checked"; } ?>>refunds_w</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="webhooks_w" <?php if(strpos($scopes, 'webhooks_w') !== false) { echo " checked"; } ?>>webhooks_w</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="frauds_w" <?php if(strpos($scopes, 'frauds_w') !== false) { echo " checked"; } ?>>frauds_w</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="subscriptions_w" <?php if(strpos($scopes, 'subscriptions_w') !== false) { echo " checked"; } ?>>subscriptions_w</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="offers_w" <?php if(strpos($scopes, 'offers_w') !== false) { echo " checked"; } ?>>offers_w</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="preauthorizations_w" <?php if(strpos($scopes, 'preauthorizations_w') !== false) { echo " checked"; } ?>>preauthorizations_w</label><br>
-
-                                </div>
-                                <div class="col-md-4">
-                                    <label><input type="checkbox" name="scope[]" value="transactions_r" <?php if(strpos($scopes, 'transactions_r') !== false) { echo " checked"; } ?> >transactions_r</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="clients_r" <?php if(strpos($scopes, 'clients_r') !== false) { echo " checked"; } ?>>clients_r</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="payments_r" <?php if(strpos($scopes, 'payments_r') !== false) { echo " checked"; } ?>>payments_r</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="refunds_r" <?php if(strpos($scopes, 'refunds_r') !== false) { echo " checked"; } ?>>refunds_r</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="webhooks_r" <?php if(strpos($scopes, 'webhooks_r') !== false) { echo " checked"; } ?>>webhooks_r</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="frauds_r" <?php if(strpos($scopes, 'frauds_r') !== false) { echo " checked"; } ?>>frauds_r</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="subscriptions_r" <?php if(strpos($scopes, 'subscriptions_r') !== false) { echo " checked"; } ?>>subscriptions_r</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="offers_r" <?php if(strpos($scopes, 'offers_r') !== false) { echo " checked"; } ?>>offers_r</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="preauthorizations_r" <?php if(strpos($scopes, 'preauthorizations_r') !== false) { echo " checked"; } ?>>preauthorizations_r</label><br>
-
-                                </div>
-                                <div class="col-md-4">
-                                    <label><input type="checkbox" name="scope[]" value="transactions_rw" <?php if(strpos($scopes, 'transactions_rw') !== false) { echo " checked"; } ?> >transactions_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="clients_rw" <?php if(strpos($scopes, 'clients_rw') !== false) { echo " checked"; } ?>>clients_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="payments_rw" <?php if(strpos($scopes, 'payments_rw') !== false) { echo " checked"; } ?>>payments_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="refunds_rw" <?php if(strpos($scopes, 'refunds_rw') !== false) { echo " checked"; } ?>>refunds_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="webhooks_rw" <?php if(strpos($scopes, 'webhooks_rw') !== false) { echo " checked"; } ?>>webhooks_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="frauds_r" <?php if(strpos($scopes, 'frauds_rw') !== false) { echo " checked"; } ?>>frauds_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="subscriptions_rw" <?php if(strpos($scopes, 'subscriptions_rw') !== false) { echo " checked"; } ?>>subscriptions_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="offers_rw" <?php if(strpos($scopes, 'offers_rw') !== false) { echo " checked"; } ?>>offers_rw</label><br>
-                                    <label><input type="checkbox" name="scope[]" value="preauthorizations_rw" <?php if(strpos($scopes, 'preauthorizations_rw') !== false) { echo " checked"; } ?>>preauthorizations_rw</label><br><br>
-
-
-                                </div>
-                            </div>
-                    </div> -->
                    <div class="form-group" >
                         <button type="submit" class="btn btn-sm btn-primary submit-button" <?php echo $hasMerchant?"":"disabled"; ?> >Refresh access token</button>
                     </div>
