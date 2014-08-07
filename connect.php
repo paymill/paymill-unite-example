@@ -1,6 +1,8 @@
 <?php
     session_start();
 
+    include 'library/unite.php';
+
     // set given parameters from POST or stored SESSION
     $queryString  = "";
     $scope        = isset($_POST['scope']) ? $_POST['scope'] : $_SESSION['userConfig']['scope'];
