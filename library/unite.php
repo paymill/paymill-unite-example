@@ -33,12 +33,6 @@
         $paymill_api_root = 'https://api.paymill.com/v2/';
     }
 
-    // Transaction keys (available after successful authorization)
-    $public_key  = getPublicKeyFromStorage();
-    $private_key = getPrivateKeyFromStorage();
-    $is_live     = getLiveModeFromStorage();
-
-
     //
     // Helper functions:
     //
@@ -79,73 +73,6 @@
         $url.= 'system/authMerchant.php';
 
         return $url;
-    }
-
-    /**
-     * sets the public_key from system/merchant.csv
-     * @var $public_key string
-     * @return string Public Key
-     */
-    function getPublicKeyFromStorage()
-    {
-        $public_key = null;
-        if (($handle = @fopen("system/merchant.csv", "r")) !== FALSE) {
-            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                $num = count($data);
-
-                for ($c=0; $c < $num; $c++) {
-                    $public_key = $data[2];
-                }
-            }
-            fclose($handle);
-        }
-
-        return $public_key;
-    }
-
-    /**
-     * sets the private_key from system/merchant.csv
-     * @var $private_key string
-     * @return string Private Key
-     */
-    function getPrivateKeyFromStorage()
-    {
-        $private_key = null;
-        if (($handle = @fopen("system/merchant.csv", "r")) !== FALSE) {
-            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                $num = count($data);
-
-                for ($c=0; $c < $num; $c++) {
-                     $private_key = $data[0];
-                }
-
-            }
-            fclose($handle);
-        }
-
-        return $private_key;
-    }
-
-    /**
-     * return if merchant can do live transactions or not
-     * @var $is_live bool
-     * @return bool If merchant has livemode
-     */
-    function getLiveModeFromStorage()
-    {
-        $is_live = false;
-        if (($handle = @fopen("system/merchant.csv", "r")) !== FALSE) {
-            while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                $num = count($data);
-
-                for ($c=0; $c < $num; $c++) {
-                     $is_live = $data[4]===1;
-                }
-            }
-            fclose($handle);
-        }
-
-        return $is_live;
     }
 
     /**

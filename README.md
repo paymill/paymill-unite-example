@@ -40,17 +40,11 @@ We will use this example URL as base for the following explanations.
 **To get prepared you need to register at least one PAYMILL account which acts as app.**
 See [Registering an application](https://github.com/paymill/paymill-unite-example#registering-an-application) for more information.
 
-Please enter all your data into the configuration file:
-_paymill-unite-example/library/unite.php_
+Please enter all your data into the form on the index.php
+_paymill-unite-example/index.php_
 
 This example does not need a database connection to store the received connect data.
-But it uses a CSV file: _paymill-unite-example/system/merchant.csv_
-
-Make sure that this file is writable:
-
-```
-chmod 777 paymill-unite-example/system/merchant.csv
-```
+Your data will be saved into a session.
 
 ### Connect your marketplace with your merchants with PAYMILL Connect
 
@@ -70,8 +64,8 @@ See [Requesting an authorization code via OAuth2](https://github.com/paymill/pay
 The PAYMILL Connect page shows your app name and logo (if upload) with a login form below.
 If your merchant already has a PAYMILL account he can login, if not he can register for free to access the authorization page. If you register a new merchant account, don't forget to click on the link in the activation mail.
 
-After he authorized your request by clicking the "Authorize" button he will be redirect to your specified redirect URI. In our example we defined _http://test.local/paymill-unite-example/system/authMerchant.php_.
-The PHP script _authMerchant.php_ stores the received connection data into the CSV file (paymill-unite-example/system/merchant.csv), for the later use for doing transactions.
+After he authorized your request by clicking the "Authorize" button he will be redirect to your specified redirect URI. In our example it will be _http://test.local/paymill-unite-example/system/authMerchant.php_.
+The PHP script _authMerchant.php_ stores the received connection data into the session for the later use for doing transactions.
 
 After storing the data, the script redirects the merchant to a success page _http://test.local/paymill-unite-example/system/authMerchant.php_:
 
@@ -79,7 +73,7 @@ After storing the data, the script redirects the merchant to a success page _htt
 
 ### Do transactions with the granted permissions and raise fees
 
-Since the authorization was done, you have your access key for the connected merchant in the CSV file (paymill-unite-example/system/merchant.csv).
+Since the authorization was done, you have your access key for the connected merchant in the session.
 Feel free to store your access key for your usage in a database or where ever you want as long it is save.
 
 To test the transaction example go to:
@@ -93,7 +87,7 @@ As you can see there is also a "fee" field. This field allows you to send an (in
 This fee will be collected for each transaction and transferred to your account by us (on a weekly basis).
 
 When you look at the source code of this file (paymill-unite-example/shopping-cart.php) you find the JavaScrip variable **PAYMILL_PUBLIC_KEY**, which contains the public key of your merchant (you received it with PAYMILL Connect).
-But to do the transaction itself, which is done in _paymill-unite-example/api-trx-request.php_ you need your personal access key **$access_token**, which you also received with PAYMILL Connect.
+But to do the transaction itself, which is done in _paymill-unite-example/api-trx-request.php_ you need your personal access key **$token**, which you also received with PAYMILL Connect.
 
 For the fee transfer your connected merchant need to be a client of your app with a valid payment object.
 this payment object must also be past to the transaction create function (as you can see in paymill-unite-example/api-trx-request.php).
@@ -127,21 +121,21 @@ After activating an app you'll get the following app parameters which you need f
 
 #### Requesting an authorization code
 
-To request an authorization code for another merchants account, you’ll have to redirect that merchant to the authorization page on our servers.
+To request an authorization code for another merchants account, you'll have to redirect that merchant to the authorization page on our servers.
 The target url for this redirect https://connect.paymill.com/authorize and you need to append a few query parameters to the request:
 
 * *client_id* (required): The application id given to you upon application registration.
 * *response_type* (required): Fixed string set to "code".
 * *scope* (required): A space-separated list of permissions you want to request.
 * *redirect_uri* (optional): If you need a different redirect URI (to that from the app settings).
-* *custom_param* (optional): If you want to pass additional values.
+* *checksum* (optional): If you added a hash_token into your app you have to generate a checksum _http://test.local/paymill-unite-example/system/connect.php_
 
 **Example:**
 
     https://connect.paymill.com/
     ?client_id=app_1d70acbf80c8c35ce83680715c06be0d15c06be0d
     &scope=transactions_rw%20refunds_rw
-    &response_type=code
+    &response_type=code&checksum=de3535542947256615d6cac38c565eb1b6e618eb9f9cbac0cc87bc06c54b8504
 
 When the merchant is redirected back to your page, we'll append a few query parameters to the uri
 you provided when registering your application, depending on the outcome of the request.
