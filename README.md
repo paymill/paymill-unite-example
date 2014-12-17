@@ -358,6 +358,8 @@ There are three new webhook events available:
 * _app.merchant.rejected_: triggered if a newly connected merchant is rejected during his activation process. Live keys will never become valid if this event occurs.
 * _app.merchant.pm.update_: triggered if a merchant payment method has become active or inactive. The message will contain all recently active payment methods and an information which one has changed.
 * _app.merchant.app.disabled_: triggered, when a merchant disables an application he previously granted access to his account
+* _app.merchant.live_requests_allowed: returns a merchant-object if a connected merchant allows live requests
+* _app.merchant.live_requests_not_allowed: returns a merchant-object if a connected merchant denys live requests
 
 These webhooks can be registered to the application's account and are triggered for every merchant who connects to this application.
 
