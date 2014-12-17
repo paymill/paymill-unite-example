@@ -139,7 +139,7 @@
                                             <td><a href="https://paymill.com/en-gb/documentation-3/reference/api-reference">API</a> root</td>
                                             <td>
                                                 <p>API root URL</p>
-                                                <p><strong>default:</strong> <code>https://api.paymill.com/v2/</code></p>
+                                                <p><strong>default:</strong> <code>https://api.paymill.com/v2.1/</code></p>
                                             </td>
                                             <td><input type="text" name="apiRoot"  value="<?php echo $paymill_api_root; ?>" /></td>
                                         </tr>
@@ -154,14 +154,14 @@
                                         <tr>
                                             <td><strong>Client ID</strong></td>
                                             <td>
-                                                <p>Equivalent to your App ID. Can be found in <br><em><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> App -> App details</em></p>
+                                                <p>Equivalent to your App ID. Can be found in <br><em><a href="https://app.paymill.com">PAYMILL Merchant Centre</a> -> Marketplaces -> Own apps -> App detail page</em></p>
                                             </td>
                                             <td><input type="text" name="clientId"  placeholder="<?php echo $client_id; ?>" value="<?php echo $client_id; ?>" /> </td>
                                         </tr>
                                         <tr>
                                             <td><strong>Client Secret</strong></td>
                                             <td>
-                                                <p>Needed for authentication. Can be found in <br><em><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> App -> App details</em></p>
+                                                <p>Needed for authentication. Can be found in <br><em><a href="https://app.paymill.com">PAYMILL Merchant Centre</a> -> Marketplaces -> Own apps -> App detail page</em></p>
                                             </td>
                                             <td>
                                                 <input type="text" name="clientSecret"  placeholder="<?php echo $client_secret; ?>" value="<?php echo $client_secret; ?>"/>

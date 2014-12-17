@@ -30,7 +30,7 @@
         // Basic PAYMILL URLs:
         $bridge_url       = 'https://bridge.paymill.com/';
         $paymill_root     = 'https://connect.paymill.com/';
-        $paymill_api_root = 'https://api.paymill.com/v2/';
+        $paymill_api_root = 'https://api.paymill.com/v2.1/';
     }
 
     //

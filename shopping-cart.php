@@ -388,7 +388,7 @@
                     Back to intro
                   </a>
                   <a href="https://app.paymill.com" class="btn btn-success btn-sm pull-right">
-                    PAYMILL Cockpit
+                    PAYMILL Merchant Centre
                     <span class="glyphicon glyphicon-chevron-right "></span>
                   </a>
                 </p>

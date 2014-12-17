@@ -153,12 +153,12 @@
                         <div class="payment-errors"> </div>
                         <div class="form-group">
                             <label >Your Private test key
-                                <br> <i><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> API-Keys -> Test keys</i></label>
+                                <br> <i><a href="https://app.paymill.com">PAYMILL Merchant Centre</a> -> Development -> API-Keys -> Test keys</i></label>
                                 <input type="text" placeholder="[private-test-key]" id="private-key" name="privatekey" class="form-control"  >
                         </div>
                         <div class="form-group">
                             <label >Your Public test key
-                                <br> <i><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> API-Keys -> Test keys</i></label>
+                                <br> <i><a href="https://app.paymill.com">PAYMILL Merchant Centre</a> -> Development -> API-Keys -> Test keys</i></label>
                                 <input type="text" placeholder="[public-test-key]" id="public-key" name="public-key" class="form-control"  >
                         </div>
                     </p>
@@ -195,7 +195,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Amoun (in Cent)</label>
+                            <label>Amount (in Cent)</label>
                             <input  class="card-amount form-control" name="amount" type="text" placeholder="1" size="20" value="1" />
                         </div>
                         <div class="form-group">

@@ -16,7 +16,7 @@ It allows you to connect your account with any other PAYMILL account to make tra
 Of course it's also possible to get access to all other API functionalities like refunds, subscriptions, clients etc.
 You as marketplace are an app provider which the merchant grant access to their data. PAYMILL Unite gives you an overview over the connected merchants and your permissions and helps you with the fee collection. As marketplace you have the possibility to raise fees for the transactions you've done for your merchants to get your portion out of the marketplace agreement.
 
-More about PAYMILL Unite: https://www.paymill.com/en-gb/product/unite/
+More about PAYMILL Unite: https://developers.paymill.com/en/reference/unite/
 
 ### PAYMILL Connect
 
@@ -26,7 +26,7 @@ PAYMILL Connect is the technology which allows you to connect your merchants eas
 * Your merchant accepts your connect request via OAuth2 (after signing up for free or login to their PAYMILL account).
 * We send them back. Now you have your own key to access your merchants PAYMILL account.
 
-More about PAYMILL Connect: https://www.paymill.com/en-gb/documentation-3/add-ons/connect/
+More about PAYMILL Connect: https://developers.paymill.com/en/add-ons/connect/
 
 ## Explanation of the examples
 
@@ -92,7 +92,7 @@ But to do the transaction itself, which is done in _paymill-unite-example/api-tr
 For the fee transfer your connected merchant need to be a client of your app with a valid payment object.
 this payment object must also be past to the transaction create function (as you can see in paymill-unite-example/api-trx-request.php).
 
-The rest is the same procedure as explained in our [brief instructions](https://www.paymill.com/en-gb/documentation-3/introduction/brief-instructions/).
+The rest is the same procedure as explained in our [brief instructions](https://developers.paymill.com/en/introduction/brief-instructions/).
 
 We hope that our example helps you to integrate PAYMILL Unite.
 
@@ -100,11 +100,11 @@ For more detailed information please study the following paragraphs.
 
 ## How to use our marketplace example
 
-First thing you have to do is to register a free PAYMILL account at https://www.paymill.com.
+First thing you have to do is to register a free PAYMILL account at https://www.app.paymill.com.
 
 ### Activate apps
 
-Navigate to our PAYMILL Cockpit and open the account preferences page. Under the "App" tab you can activate up to 10 apps.
+Navigate to our PAYMILL Merchant Centre and open the account preferences page. Under the "Marketplaces" -> "Own apps" tab you can activate up to 10 apps.
 Each app can request live and test keys via the connect process (see OAuth2 Workflow). An app needs the following parameters:
 
 * Name: Name of the app.
@@ -285,7 +285,7 @@ When redirecting a merchant to our authorization page he may not have a PAYMILL 
 
 **Note:** The authorization request requires parameters to be passed within the query string. URL however are limited to around 2000 characters in some web browsers. In order to send in extensive activation data, we also allow the authorization request to be made as a POST request. You can then send in the activation data as application/x-www-form-urlencoded request body. Note however that all OAuth2 related parameters as described in Requesting an authorization code have to be put into the query string, no matter what request method you choose.
 
-List of possible activation data (work in progress): [See documentation](https://paymill.com/en-gb/unite-documentation/).
+List of possible activation data (work in progress): [See documentation](https://developers.paymill.com/en-gb/unite-documentation/).
 
 ### API extensions for applications
 
@@ -294,7 +294,7 @@ List of possible activation data (work in progress): [See documentation](https:/
 If creating a transaction through a merchant's PAYMILL account, you can collect a fee for this transaction by adding the fee_amount and fee_payment parameter. The fee is specified in the same format as the transaction amount. The fee payment should represent a payment of the merchant which will be billed in order to collect the fee:
 
 ```
-curl -XPOST https://api.paymill.com/v2/transactions
+curl -XPOST https://api.paymill.com/v2.1/transactions
  -d amount=4200
  -d token=098f6bcd4621d373cade4e832627b4f6
  -d currency=EUR
@@ -336,7 +336,7 @@ In order to achieve this, you can use a payment objects and token with all merch
 
 The general approach is as follows (for example with transactions):
 
-1. You post a payment id as payment parameter, along with client, amount and currency to https://api.paymill.com/v2/transactions
+1. You post a payment id as payment parameter, along with client, amount and currency to https://api.paymill.com/v2.1/transactions
 2. We lookup the payment and client in the merchant account the used API key is valid for.
 3. If the lookup fails, we look up the payment and client in the application's merchant account.
 4. If this lookup fails to, we return the usual API error ("payment not found").

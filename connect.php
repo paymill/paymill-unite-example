@@ -144,7 +144,7 @@
             <li class="list-group-item">
                 Connecting Client ID (App ID) in this example:
                 <code><?php echo $client_id; ?></code>
-                (Can be changed in unite.php)
+                (Can be changed in <a href="connect.php">Step1 - Config</a>)
             </li>
           </ul>
         </div>
@@ -160,8 +160,8 @@
 
                 <p>
                     <strong>Note:</strong> To generate a checksum you first need to activate the checksum validtaion for your app.<br>
-                    To do so, go to the <em><a href="https://app.paymill.com">PAYMILL Cockpit</a> -> Settings -> App -> App details -> Checksum validation -> check activate -> save</em>.<br>
-                    Now you should see the <em>hash token</em> for your app to generate the checksum out of the URL query string.
+                    To do so, go to the <em><a href="https://app.paymill.com">PAYMILL Merchant Centre</a> -> Marketplaces -> Own apps -> Edit app -> Checksum-validation -> choose "yes"</em>.<br>
+                    Now you should see the <em>hash token</em> for your app on the <em>App details page</em> to generate the checksum out of the URL query string.
                 </p>
                 <p>
                     <strong>Your current checksum:</strong>
